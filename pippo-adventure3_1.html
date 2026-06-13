@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FF5A4D">
+<title>ピッポアドベンチャー3 〜きゅうきゅうレスキューの巻〜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sora:#7FC8E6; --sora-d:#4F9CBE;
+  --sakura:#FF7A5C; --sakura-d:#E8513A;   /* レスキュー・プライマリ(赤橙) */
+  --cream:#FFF6EC; --himawari:#FFC53D;
+  --mint:#7FE0B6; --mint-d:#34C99A;
+  --cho:#5B4636; --cho-l:#8A7461; --shiro:#FFFFFF;
+  --aka:#FF6F61; --aka-d:#E04B3D; --ki:#FFC53D; --ki-d:#E0A012; --mido:#6FCF7C; --mido-d:#4CAF5E;
+  --kage:0 6px 0 rgba(91,70,54,.12);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','BIZ UDGothic',sans-serif;
+  background:linear-gradient(180deg,#BFE6F5 0%,#FFE6CE 60%,#FFF6EC 100%);
+  color:var(--cho); display:flex; justify-content:center;
+  min-height:100%; overflow-x:hidden;
+}
+#stage{width:100%; max-width:430px; min-height:100dvh; position:relative; display:flex; flex-direction:column;}
+#app{flex:1; display:flex; flex-direction:column; padding:14px 14px 96px; animation:fadein .3s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+@keyframes pyon{0%,100%{transform:translateY(0);}40%{transform:translateY(-16px);}60%{transform:translateY(-8px);}}
+@keyframes yura{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+@keyframes puru{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes kira{0%{opacity:0; transform:scale(.3);}50%{opacity:1; transform:scale(1.2);}100%{opacity:0; transform:scale(.6) translateY(-30px);}}
+@keyframes fuwa{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes popin{0%{transform:scale(0);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+@keyframes sosp{0%,100%{box-shadow:0 5px 0 var(--aka-d),0 0 0 0 rgba(224,75,61,.5);}50%{box-shadow:0 5px 0 var(--aka-d),0 0 0 12px rgba(224,75,61,0);}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important;}}
+h1,h2,h3{font-weight:900;}
+.center{text-align:center;}
+
+.btn{display:block; width:100%; border:none; cursor:pointer; font-family:inherit; font-weight:900; font-size:18px; color:#fff;
+  background:var(--sakura); border-radius:28px; padding:16px; box-shadow:0 5px 0 var(--sakura-d); transition:transform .08s; margin-top:12px;}
+.btn:active{transform:translateY(4px); box-shadow:0 1px 0 var(--sakura-d);}
+.btn.blue{background:var(--sora); box-shadow:0 5px 0 var(--sora-d);} .btn.blue:active{box-shadow:0 1px 0 var(--sora-d);}
+.btn.mint{background:var(--mint); box-shadow:0 5px 0 var(--mint-d);} .btn.mint:active{box-shadow:0 1px 0 var(--mint-d);}
+.btn.yellow{background:var(--himawari); color:var(--cho); box-shadow:0 5px 0 #E0AC2E;} .btn.yellow:active{box-shadow:0 1px 0 #E0AC2E;}
+.btn.ghost{background:#fff; color:var(--cho-l); box-shadow:0 4px 0 #E8DCC8; font-weight:700;}
+.card{background:#fff; border-radius:22px; padding:18px; box-shadow:var(--kage); margin-top:12px;}
+.tag{display:inline-block; background:var(--himawari); color:var(--cho); font-size:12px; font-weight:900; border-radius:99px; padding:3px 12px;}
+.agetag{display:inline-block; background:#FFEDE6; color:#C9613F; font-size:11px; font-weight:900; border-radius:99px; padding:2px 10px; border:2px solid #FFD3C4;}
+
+.topbar{display:flex; align-items:center; gap:10px; background:#fff; border-radius:18px; padding:10px 14px; box-shadow:var(--kage);}
+.topbar .face{width:46px; height:48px; flex:none;}
+.topbar .info{flex:1; min-width:0;}
+.topbar .nm{font-weight:900; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.topbar .lv{font-size:11px; color:var(--cho-l); font-weight:700;}
+.expbar{height:10px; background:#F2E7D5; border-radius:99px; overflow:hidden; margin-top:3px;}
+.expbar > div{height:100%; background:linear-gradient(90deg,var(--himawari),var(--sakura)); border-radius:99px; transition:width .5s;}
+.backbtn{border:none; background:#fff; font-family:inherit; font-weight:900; color:var(--cho-l); font-size:14px; border-radius:99px; padding:8px 16px; box-shadow:var(--kage); cursor:pointer; align-self:flex-start; margin-bottom:4px;}
+
+.island{display:flex; align-items:center; gap:14px; background:#fff; border-radius:24px; padding:14px 16px; box-shadow:var(--kage); margin-top:14px; cursor:pointer; border:3px solid transparent; position:relative; transition:transform .1s;}
+.island:active{transform:scale(.97);}
+.island .ic{width:58px; height:58px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px;}
+.island .ttl{font-weight:900; font-size:16px;}
+.island .sub{font-size:12px; color:var(--cho-l); font-weight:700; margin-top:2px;}
+.island .prog{font-size:11px; font-weight:900; color:var(--mint-d); margin-top:4px;}
+.island .feat{position:absolute; top:10px; right:12px; background:var(--sakura); color:#fff; font-size:9.5px; font-weight:900; border-radius:99px; padding:2px 9px; box-shadow:0 3px 7px rgba(224,75,61,.3);}
+.kit-banner{display:flex; align-items:center; gap:12px; border-radius:24px; padding:14px 16px; margin-top:14px; color:#fff; cursor:pointer;}
+.kit-banner:active{transform:scale(.97);}
+.menu-row{display:flex; gap:10px; margin-top:14px;}
+.menu-row .mbtn{flex:1; background:#fff; border:none; border-radius:18px; padding:12px 6px; font-family:inherit; font-weight:900; color:var(--cho); box-shadow:var(--kage); cursor:pointer; font-size:13px;}
+.menu-row .mbtn span{display:block; font-size:24px; margin-bottom:4px;}
+.menu-row .mbtn:active{transform:scale(.95);}
+
+.quest{display:flex; align-items:center; gap:12px; background:#fff; border-radius:20px; padding:14px; box-shadow:var(--kage); margin-top:12px; cursor:pointer;}
+.quest:active{transform:scale(.97);}
+.quest .qic{width:48px; height:48px; flex:none; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:26px;}
+.quest .qt{font-weight:900; font-size:15px;}
+.quest .qs{font-size:11px; color:var(--cho-l); font-weight:700; margin-top:2px;}
+.quest .stamp{margin-left:auto; flex:none; font-size:13px; font-weight:900; color:var(--mint-d);}
+.stars{color:#FFB400; font-size:13px; letter-spacing:1px;}
+
+.lesson-card{background:#fff; border-radius:26px; padding:22px 20px; box-shadow:var(--kage); margin-top:12px; min-height:300px; display:flex; flex-direction:column;}
+.lesson-card h3{font-size:19px; color:var(--sakura-d); margin-bottom:12px;}
+.lesson-body{flex:1;}
+.lesson-card p{font-size:15px; line-height:1.9; font-weight:700; white-space:pre-line;}
+.lesson-card .pippo-say{display:flex; gap:10px; align-items:flex-end; margin-top:16px;}
+.fukidashi{background:var(--cream); border-radius:16px; padding:10px 14px; font-size:13px; font-weight:700; line-height:1.7; position:relative; flex:1;}
+.dots{display:flex; justify-content:center; gap:8px; margin-top:14px;}
+.dots i{width:10px; height:10px; border-radius:50%; background:#E8DCC8;}
+.dots i.on{background:var(--sakura); transform:scale(1.25);}
+.nav2{display:flex; gap:10px;} .nav2 .btn{flex:1;}
+
+/* ステップ(誤飲・やけど手順) */
+.steps{display:flex; flex-direction:column; gap:9px; margin-top:4px;}
+.step{display:flex; gap:11px; align-items:flex-start; background:var(--cream); border:2px solid #F3E4D2; border-radius:14px; padding:11px 12px;}
+.step .n{flex:none; width:27px; height:27px; border-radius:50%; background:var(--sakura); color:#fff; font-weight:900; font-size:14px; display:flex; align-items:center; justify-content:center;}
+.step .stxt{font-size:13.5px; line-height:1.6; font-weight:700;}
+.age-tabs{display:flex; gap:8px; margin:6px 0 10px;}
+.age-tab{flex:1; border:3px solid #F0E4D0; background:#fff; border-radius:14px; padding:9px 6px; cursor:pointer; font-family:inherit; font-weight:900; font-size:13px; color:var(--cho-l); text-align:center;}
+.age-tab.on{border-color:var(--sakura); color:var(--sakura-d); background:#FFF1ED;}
+.age-tab small{display:block; font-weight:700; font-size:10px;}
+.callout{background:#FFF8EC; border:2px dashed var(--himawari); border-radius:14px; padding:11px 13px; font-size:13px; font-weight:700; line-height:1.75; margin-top:10px; white-space:pre-line;}
+.dont-box{background:#FFF1EF; border:2px solid #FFD3CC; border-radius:14px; padding:11px 13px; margin-top:10px;}
+.dont-box .dh{font-weight:900; color:var(--aka-d); font-size:13.5px; margin-bottom:4px;}
+.dont-box ul{margin:0; padding-left:20px;} .dont-box li{font-size:13px; font-weight:700; line-height:1.7;}
+
+.battle-field{background:linear-gradient(180deg,#FFD9B8,#FFF1DD); border-radius:26px; padding:18px 14px 14px; box-shadow:var(--kage); margin-top:10px;}
+.enemy-zone{text-align:center; position:relative;}
+.monster-av{width:104px; height:104px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:56px; border:4px solid rgba(91,70,54,.18); box-shadow:0 5px 0 rgba(91,70,54,.12); animation:yura 2.5s infinite;}
+.enemy-zone.hit .monster-av{animation:puru .35s;}
+.hpwrap{max-width:230px; margin:8px auto 0;}
+.hpname{font-size:12px; font-weight:900;}
+.hpbar{height:12px; background:#fff; border-radius:99px; overflow:hidden; border:2px solid #E6C9A8;}
+.hpbar > div{height:100%; background:linear-gradient(90deg,#FFB199,#FF6F61); transition:width .4s; border-radius:99px;}
+.vs-pippo{text-align:center; margin-top:6px;}
+.vs-pippo .pp{width:88px; display:inline-block;}
+.vs-pippo.attack .pp{animation:pyon .5s;}
+.qbox{background:#fff; border-radius:18px; padding:14px; margin-top:10px; font-weight:900; font-size:15px; line-height:1.8;}
+.qbox .case-tag{display:inline-block; background:var(--sora); color:#fff; font-size:11px; border-radius:99px; padding:2px 10px; margin-bottom:6px;}
+.choice{display:block; width:100%; text-align:left; background:#fff; border:3px solid #F0E4D0; border-radius:18px; padding:13px 14px; font-family:inherit; font-weight:700; font-size:14px; color:var(--cho); margin-top:10px; cursor:pointer; line-height:1.6;}
+.choice:active{transform:scale(.98);}
+.choice.ok{border-color:var(--mint-d); background:#EAFBF3;}
+.choice.ng{border-color:var(--sakura-d); background:#FFEEF3;}
+.choice.lt-g{border-color:var(--mido);} .choice.lt-y{border-color:var(--ki);} .choice.lt-r{border-color:var(--aka);}
+.choice.lt-g.ok{background:#EDFBEF;} .choice.lt-y.ok{background:#FFF8E2;} .choice.lt-r.ok{background:#FFEFEA;}
+.kaisetsu{background:#FFFBEF; border:2px dashed var(--himawari); border-radius:16px; padding:12px; font-size:13px; font-weight:700; line-height:1.8; margin-top:10px; white-space:pre-line;}
+.beam{position:absolute; left:50%; bottom:-4px; font-size:30px; animation:kira .7s forwards; pointer-events:none;}
+
+.result-pop{text-align:center; padding:10px 0;}
+.result-pop .big{font-size:26px; font-weight:900; color:var(--sakura-d); animation:popin .4s;}
+.bigstars{font-size:40px; color:#FFB400; margin:8px 0; letter-spacing:6px;}
+.exp-get{display:inline-block; background:var(--himawari); border-radius:99px; padding:6px 18px; font-weight:900; margin-top:6px;}
+
+.mcard{background:#fff; border-radius:22px; box-shadow:var(--kage); margin-top:12px; overflow:hidden; border:3px solid #F0E4D0;}
+.mcard .mhead{display:flex; align-items:center; gap:12px; padding:14px 16px;}
+.mcard .mav{width:62px; height:62px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:34px; border:3px solid rgba(91,70,54,.15);}
+.mcard .mname{font-weight:900; font-size:17px;}
+.mcard .mreal{font-size:11px; font-weight:700; color:var(--cho-l);}
+.mcard .mbody{padding:0 16px 14px; font-size:13px; font-weight:700; line-height:1.8;}
+.mrow{display:flex; gap:8px; margin-top:8px; align-items:flex-start;}
+.mrow .ml{flex:none; background:var(--cream); border-radius:99px; padding:2px 10px; font-size:11px; font-weight:900;}
+.mrow .mv{flex:1; white-space:pre-line;}
+
+.zukan-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px;}
+.zk{background:#fff; border-radius:16px; padding:8px 4px; text-align:center; box-shadow:var(--kage); cursor:pointer;}
+.zk .za{font-size:28px;}
+.zk .zn{font-size:9px; font-weight:900; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.zk.locked{opacity:.45; filter:grayscale(1);}
+.zk:active{transform:scale(.93);}
+
+.redsign{display:flex; gap:10px; align-items:center; background:#fff; border-radius:16px; padding:12px 14px; box-shadow:var(--kage); margin-top:10px; font-weight:900; font-size:13.5px; line-height:1.6; border-left:6px solid var(--aka);}
+.redsign .ri{font-size:20px; flex:none;}
+.tel-card{border-radius:20px; padding:16px; margin-top:12px; color:#fff; box-shadow:var(--kage);}
+.tel-card .num{font-size:26px; font-weight:900; letter-spacing:1px;}
+.tel-card a{color:#fff; text-decoration:none; display:block;}
+.light-legend{display:flex; gap:6px; margin-top:10px;}
+.light-legend div{flex:1; border-radius:14px; padding:8px 4px; text-align:center; font-size:10.5px; font-weight:900; color:#fff; line-height:1.5;}
+
+.badge-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.badge{background:#fff; border-radius:18px; padding:12px 6px; text-align:center; box-shadow:var(--kage);}
+.badge .bi{font-size:32px;}
+.badge .bn{font-size:11px; font-weight:900; margin-top:4px;}
+.badge.locked{opacity:.4; filter:grayscale(1);}
+
+input.namein{width:100%; border:3px solid #F0E4D0; border-radius:18px; padding:13px; font-family:inherit; font-weight:700; font-size:16px; margin-top:10px; outline:none; color:var(--cho);}
+input.namein:focus{border-color:var(--sora);}
+
+.title-wrap{flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding-bottom:30px;}
+.logo-sub{font-size:13px; font-weight:900; color:var(--cho-l); letter-spacing:2px;}
+.logo-main{font-size:31px; font-weight:900; color:var(--sakura-d); text-shadow:3px 3px 0 #fff; line-height:1.3; margin:6px 0;}
+.title-pippo{width:175px; margin:10px auto; animation:fuwa 2.6s infinite;}
+.clouds{position:absolute; top:18px; width:100%; left:0; display:flex; justify-content:space-around; font-size:34px; opacity:.8; pointer-events:none;}
+.clouds span{animation:fuwa 4s infinite;}
+.clouds span:nth-child(2){animation-delay:1.3s;}
+.clouds span:nth-child(3){animation-delay:2.2s;}
+.line-note{font-size:11px; color:var(--cho-l); font-weight:700; margin-top:14px; line-height:1.7;}
+.tnav{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center;}
+.tnav a{text-decoration:none; background:#fff; color:var(--cho); font-weight:900; font-size:12px; border-radius:99px; padding:8px 14px; box-shadow:var(--kage);}
+
+#sosFab{position:fixed; right:max(14px,calc(50% - 215px + 14px)); bottom:18px; z-index:90; border:none; cursor:pointer;
+  font-family:inherit; font-weight:900; font-size:14px; color:#fff; background:var(--aka); border-radius:99px; padding:13px 18px;
+  box-shadow:0 5px 0 var(--aka-d); animation:sosp 1.8s infinite;}
+#sosFab:active{transform:translateY(3px); box-shadow:0 2px 0 var(--aka-d);}
+#sosFab.hide{display:none;}
+
+#toast{position:fixed; left:50%; bottom:80px; transform:translateX(-50%); background:var(--cho); color:#fff; font-weight:900; font-size:13px; padding:10px 20px; border-radius:99px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:99; max-width:90%; text-align:center;}
+#toast.show{opacity:1;}
+.confetti{position:fixed; top:-10px; font-size:20px; animation:cfall 2.4s linear forwards; pointer-events:none; z-index:98;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);}}
+.notice{font-size:12px; color:var(--cho-l); font-weight:700; line-height:1.8; background:#FFFDF6; border-radius:14px; padding:10px 12px; margin-top:12px; border:2px dashed #EAD9BC;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="clouds" aria-hidden="true"><span>☁️</span><span>🚁</span><span>☁️</span></div>
+  <div id="app" role="main"></div>
+  <button id="sosFab" class="hide" aria-label="救急車を呼ぶサインを見る">🚨 救急サイン</button>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ============================================================
+   ピッポアドベンチャー3 〜きゅうきゅうレスキューの巻〜
+   いざという時の対処法を知る / 子ども救急LINE BOT 連携(第3章)
+   ※一般的な学習用コンテンツです。診断・治療を行うものではありません。
+============================================================ */
+
+/* ---------- ピッポたいちょう(聴診器つき) SVG ---------- */
+function pippoSVG(mood){
+  const extra = mood==='ganba'
+    ? '<path d="M30 38 L41 41 M70 38 L59 41" stroke="#4A3320" stroke-width="3" stroke-linecap="round"/>'
+    : mood==='waku'
+    ? '<path d="M30 70 q4 5 9 3 M70 70 q-4 5 -9 3" stroke="#4A3320" stroke-width="2.5" fill="none" stroke-linecap="round"/><text x="80" y="14" font-size="13">✨</text>'
+    : '';
+  const eyeHi = mood==='waku' ? 2.4 : 1.8;
+  return `<svg viewBox="0 0 100 104" xmlns="http://www.w3.org/2000/svg" aria-label="ピッポたいちょう">
+    <circle cx="50" cy="54" r="48" fill="#FBF3C9"/>
+    <ellipse cx="50" cy="99" rx="26" ry="4" fill="rgba(91,70,54,.12)"/>
+    <path d="M40 98 v4 M46 100 v3 M54 100 v3 M60 98 v4" stroke="#E8912D" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M47 13 q-3 -9 3 -11 q5 3 1 11 M52 13 q2 -9 8 -8 q3 5 -5 9" fill="#FFE9A8" stroke="#7A4E2B" stroke-width="2.6" stroke-linejoin="round"/>
+    <circle cx="50" cy="57" r="40" fill="#FFE38E" stroke="#7A4E2B" stroke-width="3.5"/>
+    <path d="M22 36 q26 -14 56 0" fill="none" stroke="#FFF2BE" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+    <ellipse cx="12.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(14 12.5 66)"/>
+    <ellipse cx="87.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(-14 87.5 66)"/>
+    <path d="M22 22 h56 l-5 -9 h-46 z" fill="#FF6F61" stroke="#C9402F" stroke-width="2.4" stroke-linejoin="round"/>
+    <rect x="44" y="9" width="12" height="6" rx="1.6" fill="#fff" stroke="#C9402F" stroke-width="1.6"/>
+    <path d="M50.5 10 v4 M48.5 12 h4" stroke="#E8513A" stroke-width="1.4"/>
+    <circle cx="31" cy="30" r="11.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.2"/>
+    <circle cx="69" cy="30" r="11.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.2"/>
+    <ellipse cx="27.5" cy="26.5" rx="4.4" ry="3" fill="#fff" opacity=".9" transform="rotate(-25 27.5 26.5)"/>
+    <ellipse cx="65.5" cy="26.5" rx="4.4" ry="3" fill="#fff" opacity=".9" transform="rotate(-25 65.5 26.5)"/>
+    <circle cx="36" cy="50" r="5.6" fill="#3A2A1A"/><circle cx="64" cy="50" r="5.6" fill="#3A2A1A"/>
+    <circle cx="38" cy="48" r="${eyeHi}" fill="#fff"/><circle cx="66" cy="48" r="${eyeHi}" fill="#fff"/>
+    <circle cx="26" cy="61" r="5.6" fill="#F9A8C0" opacity=".85"/><circle cx="74" cy="61" r="5.6" fill="#F9A8C0" opacity=".85"/>
+    <path d="M50 53 L58.5 60.5 L50 68 L41.5 60.5 Z" fill="#F6A21F" stroke="#C97A12" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M50 53 L58.5 60.5 L41.5 60.5 Z" fill="#FFC04D"/>
+    <path d="M30 80 q20 14 40 0" fill="none" stroke="#6FA8DC" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="30" cy="80" r="3" fill="#6FA8DC"/><circle cx="70" cy="80" r="3" fill="#6FA8DC"/>
+    <circle cx="50" cy="92" r="5.5" fill="#E8F1FA" stroke="#6FA8DC" stroke-width="3"/>
+    ${extra}
+  </svg>`;
+}
+
+/* ---------- 受診しんごう(3択) ---------- */
+const LIGHTS=[
+ '🟢 おうちでケアして ようすみ',
+ '🟡 きょう〜あす、診療時間内に受診',
+ '🔴 いますぐ受診・救急!(夜間でも / #8000・#7119・119)'
+];
+
+/* ---------- 特集レッスン(HTML) ---------- */
+const STEP=(n,t)=>`<div class="step"><span class="n">${n}</span><span class="stxt">${t}</span></div>`;
+
+const BURN_HTML=`
+<div class="steps">
+ ${STEP(1,'<b>すぐ流水で冷やす。</b>目安<b>20〜30分以上</b>、痛みが和らぐまで。水道水をやさしく当てる(強い水圧は避ける)。')}
+ ${STEP(2,'服の上からなら<b>無理に脱がさず、服ごと冷やす</b>。はりついた服は引きはがさない。')}
+ ${STEP(3,'<b>氷・保冷剤を直接当てない</b>(凍傷や組織を傷める)。赤ちゃんは冷やしすぎ=低体温にも注意。')}
+ ${STEP(4,'<b>水ぶくれはつぶさない</b>(皮ふのバリア。破ると感染・治りが悪くなる)。')}
+ ${STEP(5,'冷やしたあとは<b>乾燥させない</b>。清潔にして<b>白色ワセリン</b>を薄くのばし、ラップや清潔なガーゼで覆って乾かさないようにして受診。')}
+</div>
+<div class="callout"><b>顔・手・足・陰部・関節・広い範囲・水ぶくれ・深そう</b>なやけどは受診。きれいに治すには<b>最初の冷却と、乾燥させないケア</b>が大切。迷ったら #7119／#8000。</div>`;
+
+const CHOKE_HTML=`
+<div class="callout"><b>声や咳が出るうち</b>は、咳を続けさせて見守る。<b>声も咳も出ず苦しそう</b>なら、下の手当て＋119。<b>見えない物を指で探らない</b>(奥へ押し込む危険)。</div>
+<div class="age-tabs">
+ <div class="age-tab on" data-tab="baby">👶 1歳未満<small>背部叩打＋胸部突き上げ</small></div>
+ <div class="age-tab" data-tab="kid">🧒 1歳以上<small>ハイムリック法</small></div>
+</div>
+<div id="choke-baby" class="steps">
+ ${STEP(1,'<b>背部叩打 ×5回</b>：片腕に乗せ<b>頭を体より低く</b>し、あごを支える。背中の真ん中(肩甲骨の間)を手のひらの付け根で5回たたく。')}
+ ${STEP(2,'<b>胸部突き上げ ×5回</b>：あおむけにして頭を低くし、胸の真ん中を指2本で5回、強く押す。')}
+ ${STEP(3,'1と2を<b>くり返す</b>。物が出る／泣き出すまで。<b>反応がなくなったら胸骨圧迫(心肺蘇生)を始め、119番。</b>')}
+</div>
+<div id="choke-kid" class="steps" style="display:none;">
+ ${STEP(1,'<b>ハイムリック法(腹部突き上げ)</b>：背後から両腕を回し、にぎりこぶしを<b>へそとみぞおちの中間</b>に当てる。')}
+ ${STEP(2,'もう片方の手で包み、<b>手前・上方向に「グッ」と素早く突き上げる</b>。')}
+ ${STEP(3,'物が出るまでくり返す。<b>反応がなくなったら胸骨圧迫(心肺蘇生)を始め、119番。</b>')}
+</div>`;
+
+const PREVENT_HTML=`
+<div class="steps">
+ ${STEP('🚽','<b>トイレットペーパーの芯(内径 約39mm)を通る物</b>は、3歳の子が飲み込めるサイズ。小さな物は<b>床から1m以下に置かない</b>。')}
+ ${STEP('🔋','とくに危険：<b>ボタン電池・コイン電池</b>、<b>磁石(マグネットボール)</b>、タバコ・吸い殻・加熱式たばこ、大人の薬・PTP包装、洗剤／漂白剤／ジェルボール、化粧品、乾燥剤。')}
+ ${STEP('🍇','窒息に注意：ナッツ類・ぶどう・ミニトマト・餅・あめ。<b>小さく切る／3歳まで与えない</b>。')}
+ ${STEP('🔒','薬・電池・洗剤は<b>チャイルドロック＋高い所</b>へ。お出かけ先(祖父母宅など)も要チェック。')}
+</div>`;
+
+/* ---------- レスキューミッション・データ ----------
+   m = ピンチ {n:なまえ, real:正体, age:こんな時, waza:きけんな所, weak:レスキューのコツ, col, av}
+   lesson = [{h, b}] または {h, html}
+   quiz = {q, c?(自由3択), a, k}  cが無い問題は受診しんごう(LIGHTS)
+---------------------------------------------- */
+const CH=[
+{ id:'netsu', name:'はつねつレスキュー島', age:'熱が出た', emoji:'🌡️', col:'#FFE0D6',
+  quests:[
+  { id:'kihon', t:'発熱たいおうの基本', e:'🌡️',
+    m:{n:'ネツダルマ', real:'発熱(からだの防御反応)', age:'どの年齢でも', av:'🔥', col:'#FFD9CF',
+       waza:'体温を上げて家族を不安にさせる。実は味方の反応', weak:'高さより「ようす」。水分・休息・つらい時だけ解熱剤'},
+    lesson:[
+      {h:'熱の高さより「ようす」を見る', b:'発熱はからだがウイルス・ばい菌と戦う防御反応です。熱の数字より、こんな「ようす」を見ましょう。\n\n・水分がとれているか\n・あやすと笑う?目が合う?\n・おしっこは出ている?\n・呼吸は苦しくない?\n\n40℃でも水分OK・遊べるなら一晩待てることも。38℃でもぐったりなら受診です。'},
+      {h:'解熱剤とおうちケア', b:'・解熱剤は「治す薬」ではなく「つらさを楽にする薬」。眠れない・飲めない時に。\n・量と種類は必ずかかりつけの指示で(大人用や兄姉の薬はNG)。\n・寒気でふるえる時は温め、上がりきってほてったら薄着+首やわきを冷やす。\n・水分は少量ずつこまめに。'}],
+    quiz:[
+      {q:'【ケース】1歳2か月。39.5℃だが麦茶を飲み、遊び、おしっこも出ている。夜8時。', a:0, k:'熱は高いけれど全身の様子が良いので、一晩おうちでケアして翌日かかりつけへでOK。様子が変わったら格上げを。'},
+      {q:'解熱剤の正しい考え方は？', c:['熱が出たら即使って下げきる','つらそうな時に楽にするために使う','使うと悪化するので絶対使わない'], a:1, k:'解熱剤は「つらさのレスキュー」。眠れて水分もとれれば回復の助けになります。'}]},
+  { id:'keiren', t:'3か月未満の発熱・熱性けいれん', e:'⚡',
+    m:{n:'ビクビクン', real:'発熱の危険サイン(3か月未満の発熱・熱性けいれん)', age:'0〜5歳', av:'⚡', col:'#FFE7B8',
+       waza:'急な高熱で体をガクガクさせ、家族の心臓を止めにくる', weak:'横向き+時間を計る+動画。3か月未満の38℃は即受診!'},
+    lesson:[
+      {h:'3か月未満の発熱は特別ルール', b:'生後3か月未満の38℃以上の発熱は、元気そうでも夜中でも受診——これは世界共通のルール。\n\n小さな赤ちゃんは重い感染症でも見た目が元気なことがあるから。病院で尿や血液を調べて確かめます。「大げさかな?」は大げさじゃない、むしろ連れて来てくれてありがとうの世界です。'},
+      {h:'熱性けいれん対応5か条', b:'多くは5分以内に止まり、後遺症は残りません。\n\n①あわてず平らな所に寝かせる\n②顔と体を横向きに(吐いた物がのどに詰まらないように)\n③口にタオルや指を入れない・押さえつけない\n④時間を計る+できれば動画を撮る(診察の超重要情報!)\n⑤5分以上続く/初めて/くり返す/様子がおかしい→119'}],
+    quiz:[
+      {q:'【ケース】生後2か月。夜10時に38.3℃。ミルクは飲めて、わりと機嫌もよい。', a:2, k:'3か月未満の38℃以上は「元気そうでも」即受診が鉄則です。'},
+      {q:'けいれん中、まずやることは？', c:['口にタオルを入れる','横向きにして時間を計る・動画を撮る','強くゆすって起こす'], a:1, k:'横向き+時間+動画の3点セット。口に物を入れるのは窒息のもとでNGです。'},
+      {q:'【ケース】2歳。発熱中のけいれんが、もう6分続いている。', a:2, k:'5分以上続くけいれんはためらわず119。続いた時間を救急隊に伝えられると助かります。'}]}
+]},
+{ id:'kokyu', name:'こきゅうレスキュー島', age:'せき・ぜいぜい', emoji:'😮‍💨', col:'#D7EAFF',
+  quests:[
+  { id:'kanbotsu', t:'呼吸が苦しいサイン', e:'🫁',
+    m:{n:'ゼーゼーゴースト', real:'呼吸が苦しい状態(細気管支炎・喘息など)', age:'0歳〜', av:'🌬️', col:'#D7E6FF',
+       waza:'陥没呼吸とゼーゼーで呼吸をうばう。小さい子ほど本気', weak:'陥没呼吸・唇の色・呼吸数で見破る。苦しそうは受診/119'},
+    lesson:[
+      {h:'「がんばって呼吸」のサイン', b:'苦しい呼吸はここに出ます。\n\n・ろっ骨の下/鎖骨の上/のどがベコベコへこむ(陥没呼吸)\n・小鼻がヒクヒク、肩で息\n・呼吸が速い、横になれない、話せない・飲めない\n・くちびるや顔色が紫っぽい\n\n1分間、呼吸の回数とへこみ、色を観察してみましょう。'},
+      {h:'おうちでできること', b:'・上体を少し起こすと楽(縦抱き・枕で角度)\n・加湿+水分こまめに\n・鼻水はこまめに吸うと、呼吸も飲みも楽に\n\n🔴唇が紫/安静でも陥没・ゼーゼー/飲めない/3か月未満で咳→呼吸が止まりそう→すぐ受診・119'}],
+    quiz:[
+      {q:'【ケース】4か月。鼻水3日目から咳が悪化、みぞおちがペコペコへこみ、ミルクが半分しか飲めない。', a:2, k:'陥没呼吸+飲めないは重症サイン。夜中でもすぐ受診です。'},
+      {q:'呼吸が苦しいサインはどれ？', c:['鼻水がたくさん出る','息のたびにろっ骨の下がへこむ','くしゃみが出る'], a:1, k:'「陥没呼吸」は要注意。唇の色とあわせて救急の目安です。'}]},
+  { id:'croup', t:'夜のケンケン咳・クループ', e:'🐺',
+    m:{n:'ケンケンウルフ', real:'クループ症候群(喉頭炎)', age:'6か月〜3歳', av:'🐺', col:'#FFE9D6',
+       waza:'夜中にオットセイのような咳とかすれ声で襲う', weak:'加湿・縦抱きで落ち着かせる。吸う時ヒューヒュー+陥没は受診'},
+    lesson:[
+      {h:'オットセイの咳が聞こえたら', b:'のどの奥(声帯あたり)が腫れる病気で、夜に悪化します。\n\n・「ケンケン!」犬の遠ぼえ/オットセイのような咳\n・かすれ声\n・息を吸う時にヒューと音\n\n楽にするコツ:縦抱きで落ち着かせる(泣くと悪化)、夜の冷たい外気や加湿、水分を少しずつ。咳の音をスマホで録音して受診時に聞かせると◎。'}],
+    quiz:[
+      {q:'クループの咳の特徴は？', c:['コンコン乾いた小さな咳','ケンケン!オットセイのような咳+かすれ声','痰がらみのゴホゴホ'], a:1, k:'「ケンケン咳」を聞いたらクループ。録音が診断の助けになります。'},
+      {q:'【ケース】1歳半。夜中にケンケン咳。抱っこで落ち着くと咳も減り、呼吸の音も静か。', a:1, k:'落ち着いて呼吸が楽ならひとまず🟡。加湿して日中に受診を。安静でもヒューヒュー+陥没なら🔴に格上げです。'}]}
+]},
+{ id:'dassui', name:'だっすいレスキュー島', age:'吐いた・下痢', emoji:'🤮', col:'#E2F6E9',
+  quests:[
+  { id:'geri', t:'嘔吐・下痢と脱水バリア', e:'💧',
+    m:{n:'ダッスイドラゴン', real:'感染性胃腸炎と脱水', age:'どの年齢でも', av:'🐉', col:'#E2F6E9',
+       waza:'嘔吐と下痢のダブルアタックで体の水分をうばう', weak:'吐いた後30分休む→経口補水液をスプーン1杯ずつ。一気飲みNG'},
+    lesson:[
+      {h:'勝負は「脱水させない」こと', b:'ウイルス性胃腸炎に特効薬はなく、勝負は脱水との戦いです。\n\n①吐いた直後は30〜60分、胃を休める\n②経口補水液(ORS)をスプーン1杯(5mL)から\n③5〜10分おきに少しずつ増やす\n④一気飲みさせない(また吐きます)\n\n母乳は続けてOK。食事は無理に食べさせない。下痢止めは基本使いません。'},
+      {h:'🔴脱水と危険な嘔吐', b:'・半日以上おしっこが出ない・泣いても涙が出ない・口がカラカラ・ぐったり\n・一滴も飲めない\n・緑色(胆汁)/赤褐色/コーヒーかすのような嘔吐\n・強い腹痛を波でくり返し、いちごジャム様の血便(腸重積)\n\nこれらは受診を(夜間は#8000に相談)。'}],
+    quiz:[
+      {q:'嘔吐したあとの水分のあげ方は？', c:['すぐコップ1杯ごくごく','30分休んでからスプーン1杯ずつ','翌朝まで何もあげない'], a:1, k:'「休ませてから、ちょっとずつ」が鉄則。胃を驚かせず水分を入れます。'},
+      {q:'【ケース】1歳。嘔吐下痢2日目。今日はおしっこが朝から出ず、泣いても涙が出ない。', a:2, k:'おしっこ・涙が出ないは脱水のレッドサイン。点滴が必要なことも。すぐ受診です。'}]},
+  { id:'jusekisei', t:'時間勝負!腸重積', e:'🍓',
+    m:{n:'ジャムジャムン', real:'腸重積症', age:'4か月〜2歳', av:'🍓', col:'#FFE3EA',
+       waza:'「泣く⇄けろっ」をくり返し、いちごジャムの血便を出す', weak:'早ければ空気を入れる処置で手術なしで治せる。時間勝負!'},
+    lesson:[
+      {h:'「泣く⇄けろっ」の波に注目', b:'腸が腸の中にもぐり込む病気(4か月〜2歳に多い)。\n\n・火がついたように泣く→数分でけろっと静か→また激しく泣く…を15〜30分おきにくり返す\n・嘔吐\n・進むと「いちごジャムのような血便」\n・顔色が悪い、ぐったり\n\n早く見つかれば、おしりから空気を入れて戻す処置で手術なしで治ることも。血便を待たず受診を!'}],
+    quiz:[
+      {q:'腸重積を疑う泣き方は？', c:['ずっと同じ調子でぐずぐず','激しく泣く⇄けろっと静か、をくり返す','抱っこすると泣き止む'], a:1, k:'「波のある激しい泣き」が最大のヒントです。'},
+      {q:'【ケース】8か月。2時間、激しく泣いてはおさまるをくり返し、2回嘔吐。おむつにいちごジャム状の血便。', a:2, k:'典型的な腸重積。夜中でもすぐ受診/119。早いほど手術なしで治る確率が上がります。'}]}
+]},
+{ id:'kega', name:'けが・じこレスキュー島', age:'頭を打った・けが', emoji:'🤕', col:'#EDE5FF',
+  quests:[
+  { id:'atama', t:'頭を打った時の見守り', e:'🪨',
+    m:{n:'ゴッツンゴーレム', real:'頭部打撲', age:'どの年齢でも', av:'🪨', col:'#EFE6D8',
+       waza:'転倒・転落で頭を直撃。あとからじわじわ来ることも', weak:'意識・嘔吐・けいれん・歩き方を観察。普段通りなら家で見られることも'},
+    lesson:[
+      {h:'打った後に見るポイント', b:'すぐ泣いていつも通り遊べるなら、家で観察できることもあります。\n\n・打った後24〜48時間は様子観察、打った所は冷やす\n・眠ってもよいが、呼吸や顔色をときどき確認\n・「一晩中ずっと起こす」必要はありません'},
+      {h:'🔴頭の危険サイン', b:'・意識がない・反応が鈍い・どんどん元気がなくなる\n・繰り返し吐く/けいれん\n・手足の動きや歩き方がおかしい・ろれつが回らない\n・耳や鼻から血や透明な液が出る\n・大泉門がパンパンに張る\n\nこれらは救急(119/すぐ受診)です。'}],
+    quiz:[
+      {q:'2歳が頭をぶつけ、すぐ泣いてその後は普段通り。まず家で見るのは？', c:['すぐCTを撮りに行く','意識・嘔吐・けいれん・歩き方を観察','眠らせないよう一晩中起こす'], a:1, k:'普段通りなら観察でOK、異常があれば受診。一晩中起こす必要はなく、呼吸・顔色の確認を。'},
+      {q:'【ケース】1歳。ソファから落ちて頭を打ち、その後2回吐いて、だんだんぼんやりしてきた。', a:2, k:'繰り返す嘔吐+反応の低下は危険サイン。すぐ受診/119です。'}]},
+  { id:'kizu', t:'切り傷・口のけが・咬傷', e:'🩹',
+    m:{n:'チクチクモン', real:'切創・口の中のけが・動物/人の咬傷', age:'どの年齢でも', av:'🩹', col:'#FFE3EA',
+       waza:'転んで切ったり、物をくわえたまま転んで刺したり', weak:'出血は5〜10分しっかり圧迫。刺さった物は抜かない!'},
+    lesson:[
+      {h:'出血とけがの初期対応', b:'・出血は清潔な布で5〜10分しっかり押さえる(途中でのぞき見ない)\n・深い傷・出血が止まりにくい・傷口が開く→受診(縫合の目安)\n・動物や人に噛まれた傷は感染しやすい→洗って受診\n・箸・ストロー・歯ブラシなどをくわえたまま転んで刺さった→抜かずにすぐ受診/救急'}],
+    quiz:[
+      {q:'指を強くはさんだ・深く切れて出血。まず何をする？', c:['傷口を何度ものぞいて確認','清潔な布で5〜10分しっかり圧迫','消毒薬をたっぷりかけ続ける'], a:1, k:'まず圧迫止血。止まらない・深い・開く・しびれるなら受診します。'},
+      {q:'【ケース】2歳。歯ブラシをくわえたまま転び、のどの奥に刺さって出血している。', a:2, k:'刺さった物は抜かず、体勢を保ってすぐ受診/119。抜くと出血や損傷が悪化することがあります。'}]}
+]},
+{ id:'yakedo', name:'やけどレスキュー島', age:'やけど', emoji:'🔥', col:'#FFDAD2', feat:true,
+  quests:[
+  { id:'hieyase', t:'やけど即冷却ミッション', e:'🚿',
+    m:{n:'ヤケドラゴン', real:'やけど(熱傷)', age:'つかまり立ち〜が多い', av:'🐲', col:'#FFD0C6',
+       waza:'熱い飲み物・カップ麺・ヒーター・アイロンで一瞬', weak:'すぐ流水で20〜30分冷やす→乾かさず受診。氷の直当て・自己流の薬はNG'},
+    lesson:[
+      {h:'まず流水でしっかり冷やす', html:BURN_HTML},
+      {h:'やってはいけないこと / 受診のめやす', b:'', html:`
+        <div class="dont-box"><div class="dh">✋ やってはいけないこと</div>
+        <ul><li>アロエ・みそ・油・歯みがき粉などを塗る</li><li>消毒薬や軟膏を自己流で何度も塗り重ねる</li><li>水ぶくれをつぶす</li><li>氷や保冷剤を皮ふに直接当てる</li></ul></div>
+        <div class="callout"><b>🔴すぐ受診:</b>広い範囲／顔・手・足・陰部・関節／服が皮ふに張りつく／白い・黒い・痛みを感じない(深い)／化学薬品・電気／やけど+ぐったり
+        <b>🟡当日受診:</b>水ぶくれ、ズキズキ痛む、コイン〜手のひら大
+        <b>🟢おうちで:</b>赤くなった程度で、冷やしたら痛みが引いて元気</div>`}],
+    quiz:[
+      {q:'やけどをした。いちばん最初にすることは？', c:['オロナインなどの軟膏を塗る','氷を直接当てる','すぐ流水で冷やす'], a:2, k:'まず流水で冷やすのが最優先。目安20〜30分、痛みが和らぐまで。冷やしたあとは乾燥させずに受診を。'},
+      {q:'冷やしたあとの正しいケアは？', c:['水ぶくれを破って薬を塗る','乾燥させないよう白色ワセリン等で保護して受診','日光に当てて乾かす'], a:1, k:'乾かさないケア(湿潤)で治りがきれいになります。水ぶくれは破らず、顔・手・広範囲は受診を。'},
+      {q:'【ケース】1歳。カップ麺のお湯が腕の広い範囲にかかり、赤くなって水ぶくれ、痛がって泣いている。', a:2, k:'まず服ごと流水で20〜30分冷やしつつ、広範囲+水ぶくれは受診レベル。冷却を続けながら受診/救急相談を。'}]}
+]},
+{ id:'hifu', name:'ひふ・アレルギー島', age:'皮膚・アレルギー', emoji:'🌿', col:'#E2F6E9',
+  quests:[
+  { id:'anaph', t:'アナフィラキシーを見抜く', e:'🐝',
+    m:{n:'アレルゴン', real:'アレルギー・アナフィラキシー', age:'どの年齢でも', av:'🐝', col:'#FFE7B8',
+       waza:'じんましん→呼吸・嘔吐・ぐったりへ一気に進む', weak:'皮ふ+呼吸/嘔吐/ぐったりは即119。エピペンがあれば使用'},
+    lesson:[
+      {h:'軽いじんましんと危険なサイン', b:'軽いじんましん(かゆい・冷やすと楽)は様子を見られることもあります。\n\n但し、皮ふ症状に次が加わったら危険(アナフィラキシー):\n・せき/ゼーゼー/声がかすれる\n・くり返す嘔吐・腹痛\n・ぐったり・顔色が悪い・唇や顔が腫れる\n\nすぐ119、エピペンがあれば使用。新しく食べた物・触れた物をメモしておきましょう。'}],
+    quiz:[
+      {q:'【ケース】3歳。卵を食べた後にじんましん+せき+息苦しさ+嘔吐。', a:2, k:'皮ふ症状に呼吸症状・嘔吐が加わったらアナフィラキシー。すぐ119、エピペンがあれば使用です。'},
+      {q:'初めて食べる食品の注意は？', c:['すぐ受診できる平日昼間に、体調の良い日に少量から','夜寝る前にたっぷり','初めては保育園で試す'], a:0, k:'何かあった時に動ける時間帯に、少量から。新規の食品は1種類ずつが安心です。'}]},
+  { id:'tobihi', t:'とびひ・赤く腫れて痛い', e:'🦟',
+    m:{n:'カユカユモン', real:'とびひ・虫刺され・皮ふの細菌感染', age:'どの年齢でも', av:'🦟', col:'#FFE3EA',
+       waza:'かき壊して広げる。赤く腫れて熱+痛みに化けることも', weak:'かき壊さない・冷やす。赤く腫れて熱+痛いは受診'},
+    lesson:[
+      {h:'皮ふトラブルの見分け', b:'・虫さされ・かゆみ:冷やす、かき壊さない。保湿+処方の薬を正しく\n・とびひ:水ぶくれ・かさぶたが広がる→受診(他にうつる)\n・赤く腫れて熱を持ち、押すと痛い→細菌感染(蜂窩織炎)を疑い受診\n\nステロイド外用薬は、医師の指示量を守って正しく塗ります。'}],
+    quiz:[
+      {q:'皮ふが赤く腫れて熱を持ち、押すと痛い。考えられるのは？', c:['ただのあせも','細菌感染の可能性→受診','日焼け'], a:1, k:'赤み・腫れ・熱感・痛みは細菌感染のサイン。早めに受診を。'},
+      {q:'【ケース】4歳。鼻の下のかさぶたが広がり、ジュクジュクして数が増えてきた。', a:1, k:'とびひの可能性。広がる・うつるので、診療時間内に受診を。'}]}
+]},
+{ id:'goin', name:'ごいんレスキュー島', age:'誤飲・のどに詰まった', emoji:'⚠️', col:'#FFEAC9', feat:true,
+  quests:[
+  { id:'yobou', t:'誤飲ゼロ作戦(よぼう)', e:'🛡️',
+    m:{n:'ゴックンマ', real:'誤飲(ボタン電池・磁石・薬・洗剤など)', age:'6か月〜3歳がピーク', av:'🧲', col:'#E3E8FF',
+       waza:'床の小物を一瞬でゴックン。ボタン電池と磁石が最凶コンボ', weak:'芯(39mm)を通る物は届かない所へ。何を・いつ・いくつをメモ'},
+    lesson:[
+      {h:'誤飲ゼロ作戦(よぼう)', html:PREVENT_HTML},
+      {h:'いちばん危険なもの', b:'【すぐ受診/119レベル】\n・ボタン電池…数時間で食道に穴!「飲んだかも」でもレントゲンへ\n・磁石2個以上…腸をはさんで穴をあける\n・タバコ・加熱式たばこの液\n・大人の薬・サプリ、洗剤・漂白剤\n\n【あわてなくてよいことが多い】\n・小さな紙やクレヨン少量→多くはうんちと一緒に出ます\n\nそれでも不安なら中毒110番へ。'}],
+    quiz:[
+      {q:'もっとも急いで受診すべき誤飲は？', c:['クレヨンを少しかじった','ボタン電池を飲んだかも','ティッシュを少し食べた'], a:1, k:'ボタン電池は数時間で食道をやけどさせる最凶アイテム。「かも」でもレントゲンを撮りに行きます。'},
+      {q:'誤飲した時の対応で正しいのは？', c:['まず指で吐かせる','無理に吐かせず、現物を持って受診・相談','水をたくさん飲ませて流す'], a:1, k:'吐かせると悪化する物(洗剤・石油など)があります。現物・パッケージ持参が診断の近道です。'}]},
+  { id:'choke', t:'のどに詰まった!ハイムリック法', e:'🆘',
+    m:{n:'ノドツマール', real:'窒息(気道異物)', age:'乳幼児に多い', av:'😣', col:'#FFD0C6',
+       waza:'食べ物や小物でのどをふさぎ、声も咳も出なくさせる', weak:'声が出るうちは咳を。出ないなら年齢別の手当て+119!'},
+    lesson:[
+      {h:'のどに詰まった時の手当て', html:CHOKE_HTML},
+      {h:'吐かせてはいけない時 / 中毒110番', b:'✋ 吐かせないで:\n・意識がもうろう・けいれんしている\n・洗剤・漂白剤・トイレ洗浄剤など強い酸/アルカリ\n・灯油・ガソリン・除光液など石油製品\n・とがった物\n\nボタン電池・磁石は症状がなくてもすぐ受診。\n\n📞 中毒110番(大阪) 072-727-2499(24時間)に「何を・どれだけ・いつ・体重・今の様子」を伝えて相談を。現物やパッケージを手元に。'}],
+    quiz:[
+      {q:'のどに詰まって声も咳も出ない1歳未満の赤ちゃん。最初にすることは？', c:['水を飲ませる','背中の真ん中を手のひらで5回たたく(背部叩打)','指で口の奥を探る'], a:1, k:'1歳未満は「背部叩打5回→胸部突き上げ5回」を交互に。見えない物を指で探すと奥へ押し込む危険。反応がなくなったら胸骨圧迫+119です。'},
+      {q:'1歳以上の子がのどを詰まらせ、声が出ない。正しい手当ては？', c:['背後から腹部を上方向に突き上げる(ハイムリック法)','水をたくさん飲ませる','背中をなでてあげる'], a:0, k:'1歳以上は腹部突き上げ(ハイムリック法)。へそとみぞおちの中間で、手前・上にグッと突き上げます。'}]}
+]},
+{ id:'oshikko', name:'おしっこレスキュー島', age:'おしっこ・血尿', emoji:'💧', col:'#D7F2FF',
+  quests:[
+  { id:'uti', t:'かくれ発熱・尿路感染症', e:'🔥',
+    m:{n:'オシッコモヤン', real:'尿路感染症', age:'0〜2歳に多い', av:'💧', col:'#D7F2FF',
+       waza:'咳も鼻水もないのに高熱だけを出す「かくれ熱」', weak:'原因不明の高熱はおしっこ検査。前→後ろ拭き+こまめなおむつ替えで予防'},
+    lesson:[
+      {h:'かぜ症状のない高熱の正体', b:'おしっこの通り道にばい菌が入る病気。まだ「痛い」と言えない赤ちゃんでは、咳も鼻水もないのに高熱だけ、が典型です。\n\n・受診で「おしっこの検査」をするのはこのため\n・抗菌薬でしっかり治すことが大事(腎臓を守る)\n\n予防はおむつ替えをこまめに+「前→後ろ」拭き。'}],
+    quiz:[
+      {q:'【ケース】8か月。咳も鼻水もないのに39℃が2日目。機嫌はいまいち、水分はとれる。', a:1, k:'かぜ症状のない高熱は尿路感染の可能性。診療時間内に受診し、おしっこの検査を(ぐったり・飲めないなら🔴)。'},
+      {q:'血尿と血便のちがいで正しいのは？', c:['どちらも同じ','尿に血=血尿、便に血=血便。出どころが違う','気にしなくてよい'], a:1, k:'どちらにまじっているか観察を。色のついたおしっこは捨てず、容器か写真で持参が◎。'}]},
+  { id:'mukumi', t:'むくみ・コーラ色のおしっこ', e:'🫧',
+    m:{n:'ムクムクン', real:'ネフローゼ症候群・急性腎炎', age:'2〜6歳に多い', av:'🫧', col:'#E3E8FF',
+       waza:'まぶたや足をむくませ、おしっこを泡立ち/コーラ色に', weak:'むくみ+泡尿、コーラ色尿は受診。検尿はチャンス'},
+    lesson:[
+      {h:'おしっこは腎臓からのお手紙', b:'・まぶたや足のむくみ、急な体重増加、消えない泡のおしっこ→ネフローゼを疑う\n・コーラ色/紅茶色のおしっこ+むくみ→腎炎を疑う(溶連菌の2〜3週後に多い)\n\n3歳児健診や学校の尿検査は腎臓を守るチャンス。ヘンな色の尿は捨てず、容器か写真で持参を。'}],
+    quiz:[
+      {q:'【ケース】4歳。3日前からまぶたがむくみ、靴下の跡がくっきり、体重が1週間で1kg増。', a:1, k:'ネフローゼを疑うので今日〜明日に受診を。呼吸が苦しい・尿がほぼ出ないなら🔴へ格上げ。'},
+      {q:'腎臓の病気を早く見つける身近なチャンスは？', c:['3歳児健診や学校の尿検査','視力検査','身長測定'], a:0, k:'尿検査は腎臓からのお手紙を読む検診。提出を忘れずに。'}]}
+]},
+{ id:'mimi', name:'みみ・はな・くち島', age:'耳・鼻・口', emoji:'👂', col:'#F3E8FF',
+  quests:[
+  { id:'hanaji', t:'鼻血・中耳炎・口内炎', e:'👂',
+    m:{n:'ハナヂーヌ', real:'鼻血・急性中耳炎・口内炎', age:'どの年齢でも', av:'👂', col:'#FFE3EA',
+       waza:'夜中に鼻血や耳の痛みで泣かせる', weak:'鼻血は小鼻を10〜15分つまむ(上を向かない)。中耳炎は痛み止めで一晩しのげる'},
+    lesson:[
+      {h:'鼻血の正しい止め方', b:'座って少し前かがみになり、小鼻(やわらかい所)を10〜15分しっかりつまみます。\n\n・上を向かない(血がのどへ流れる)\n・首の後ろをたたかない\n・10〜15分つまんでも止まらない/顔色が悪いほど大量→受診'},
+      {h:'耳の痛み・口内炎', b:'・かぜの後、夜中に急に泣く・耳をしきりに触る→中耳炎のことが。夜は処方の痛み止めでしのぎ、翌日受診でOK。耳だれは触らず受診\n・口内炎が多発して食べられず水分が減る→受診。しみない冷たい物・水分を\n\n中耳炎の予防は「鼻水をこまめに吸う」ことです。'}],
+    quiz:[
+      {q:'鼻血の正しい止め方は？', c:['上を向いて待つ','小鼻を10〜15分つまむ','首の後ろをたたく'], a:1, k:'小鼻をつまみ、少し前かがみに。上を向くと血がのどへ流れます。'},
+      {q:'【ケース】1歳半。鼻かぜ4日目の夜中、急に泣いて右耳をしきりに触る。38℃、水分はとれる。', a:1, k:'中耳炎が濃厚。夜は痛み止めでしのぎ、翌日の診療時間に受診でOK。ぐったり・首が腫れる等は格上げを。'}]}
+]}
+];
+
+/* ---------- 救急車を呼ぶサイン(レッドサイン) ---------- */
+const REDSIGNS=[
+ ['😵','反応がない・呼びかけても目を覚まさない'],
+ ['🫁','呼吸をしていない・呼吸が変／くちびるや顔が紫'],
+ ['⚡','けいれんが5分以上続く・止まっても意識が戻らない／くり返す'],
+ ['🆘','のどに物を詰まらせて声が出ない・苦しそう'],
+ ['🩸','大量の出血／止まらない出血'],
+ ['🤕','頭を強く打って意識がもうろう・くり返し吐く'],
+ ['😟','ぐったりして反応が弱い・顔色が極端に悪い'],
+ ['🔥','広範囲のやけど・大きなけが'],
+ ['🐝','じんましん+呼吸困難・嘔吐・ぐったり(アナフィラキシー)'],
+ ['🌡️','生後3か月未満で38℃以上の発熱'],
+ ['🔋','ボタン電池・磁石・強い洗剤・薬を飲んだ']];
+
+/* 119のかけ方 */
+const CALL119=[
+ '「火事ですか、救急ですか？」→「救急です」と答える',
+ '住所と目印(近くの建物など)を伝える',
+ '誰が・どうしたか・年齢・今の様子を伝える',
+ 'できれば玄関の鍵を開け、保険証・母子手帳・お薬手帳・靴を用意'];
+
+/* ---------- 称号 ---------- */
+const TITLES=['けんしゅうレスキュー隊員','見習いレスキュー隊員','たのもしいレスキュー隊員','救急判断マイスター','スーパーレスキュー隊長','でんせつのレスキュー隊長'];
+
+/* ---------- 状態 ---------- */
+let S={started:false,name:'',baby:'',exp:0,done:{},stars:{},caught:{},sosRead:false};
+let mem={};
+const SAVEKEY='pippo3-save-v1';
+async function save(){
+  const data=JSON.stringify(S);
+  try{ localStorage.setItem(SAVEKEY, data); return; }catch(e){}
+  try{ if(window.storage){ await window.storage.set(SAVEKEY, data); return; } }catch(e){}
+  mem[SAVEKEY]=data;
+}
+async function load(){
+  try{ const v=localStorage.getItem(SAVEKEY); if(v){ S=Object.assign(S,JSON.parse(v)); return true; } }catch(e){}
+  try{ if(window.storage){ const r=await window.storage.get(SAVEKEY); if(r&&r.value){ S=Object.assign(S,JSON.parse(r.value)); return true; } } }catch(e){}
+  if(mem[SAVEKEY]){ S=Object.assign(S,JSON.parse(mem[SAVEKEY])); return true; }
+  return false;
+}
+
+/* ---------- ユーティリティ ---------- */
+const app=document.getElementById('app');
+const fab=document.getElementById('sosFab');
+function lvOf(exp){ return Math.min(99, Math.floor(exp/60)+1); }
+function titleOf(lv){ return TITLES[Math.min(TITLES.length-1, Math.floor((lv-1)/2))]; }
+function expInLv(exp){ return exp%60; }
+function esc(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),2200); }
+function confetti(){ const em=['🎉','✨','🚑','⭐','💛','🩹']; for(let i=0;i<18;i++){ const d=document.createElement('div'); d.className='confetti'; d.textContent=em[i%em.length]; d.style.left=(Math.random()*100)+'%'; d.style.animationDelay=(Math.random()*.6)+'s'; document.body.appendChild(d); setTimeout(()=>d.remove(),3000);} }
+function doneCount(ci){ return CH[ci].quests.filter(q=>S.done[CH[ci].id+'/'+q.id]).length; }
+function totalDone(){ return Object.keys(S.done).length; }
+function totalQuests(){ return CH.reduce((a,c)=>a+c.quests.length,0); }
+function allMon(){ const r=[]; CH.forEach((c,ci)=>c.quests.forEach((q,qi)=>r.push({ci,qi,key:c.id+'/'+q.id,m:q.m}))); return r; }
+function caughtCount(){ return allMon().filter(x=>S.caught[x.key]).length; }
+function showFab(on){ fab.classList.toggle('hide', !on); }
+
+function header(){
+  const lv=lvOf(S.exp);
+  return `<div class="topbar">
+    <div class="face">${pippoSVG('nico')}</div>
+    <div class="info">
+      <div class="nm">${esc(S.name||'パパママ')}さん <span class="tag">Lv.${lv}</span></div>
+      <div class="lv">称号:${titleOf(lv)}　🃏カード ${caughtCount()}/${totalQuests()}</div>
+      <div class="expbar"><div style="width:${expInLv(S.exp)/60*100}%"></div></div>
+    </div>
+  </div>`;
+}
+function monsterCard(m,caught){
+  return `<div class="mcard">
+    <div class="mhead" style="background:${m.col};">
+      <div class="mav" style="background:#fff;">${caught?m.av:'❓'}</div>
+      <div><div class="mname">${caught?esc(m.n):'？？？'}</div><div class="mreal">${caught?esc(m.real):'まだ出会っていない'}</div></div>
+    </div>
+    ${caught?`<div class="mbody">
+      <div class="mrow"><div class="ml">こんな時</div><div class="mv">${esc(m.age)}</div></div>
+      <div class="mrow"><div class="ml">きけんな所</div><div class="mv">${esc(m.waza)}</div></div>
+      <div class="mrow"><div class="ml">レスキューのコツ</div><div class="mv">${esc(m.weak)}</div></div>
+    </div>`:''}
+  </div>`;
+}
+
+/* ---------- タイトル ---------- */
+function showTitle(hasSave){
+  showFab(false);
+  app.innerHTML=`<div class="title-wrap">
+    <div class="logo-sub">🚑 だい3しょう・きゅうきゅうレスキュー 🚑</div>
+    <div class="logo-main">ピッポ<br>アドベンチャー3<br><span style="font-size:16px;">〜きゅうきゅうレスキューの巻〜</span></div>
+    <div class="title-pippo">${pippoSVG('waku')}</div>
+    <div style="font-size:13px;font-weight:900;color:var(--cho-l);">レスキューたいちょう「ピッポ」と、<br>急な熱・けが・やけど・誤飲に立ち向かう冒険へ!<br>🚦受診しんごうで「今すぐ?家で?」を見破ろう。</div>
+    ${hasSave?`<button class="btn" id="bCont">つづきから</button><button class="btn ghost" id="bNew">はじめから</button>`
+             :`<button class="btn" id="bNew">ぼうけんをはじめる</button>`}
+    <div class="tnav">
+      <a href="https://kohei-miyazaki.github.io/pippo-adventure/">🏠 ポータル</a>
+      <a href="https://kohei-miyazaki.github.io/pippo-adventure/pippo-adventure.html">🐣 第1章</a>
+      <a href="https://kohei-miyazaki.github.io/pippo-adventure/pippo-adventure2.html">🩺 第2章</a>
+    </div>
+    <div class="line-note">子ども救急LINE BOT 連携アプリ・第3章<br>あそんだ記録はこの端末のブラウザに保存されます。<br>※一般的な学習用の情報です。診断・治療を行うものではありません。心配な症状は医療機関・#8000・#7119へ。</div>
+  </div>`;
+  const bn=document.getElementById('bNew'); if(bn) bn.onclick=()=>showSetup();
+  const bc=document.getElementById('bCont'); if(bc) bc.onclick=()=>showHome();
+}
+
+/* ---------- はじめの設定 ---------- */
+function showSetup(){
+  showFab(false);
+  app.innerHTML=`
+    <h2 class="center" style="margin-top:8px;">レスキューたいの じゅんび</h2>
+    <div class="card center" style="padding-top:12px;">
+      <div style="width:90px;margin:0 auto;">${pippoSVG('nico')}</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.8;">今度のミッションは「きゅうきゅうレスキュー」!<br>急な熱・けが・やけど・誤飲のピンチから、<br>キミの判断で家族を守るんだピポ。<br>まずはレスキュー隊に登録しよう!</div>
+    </div>
+    <div class="card">
+      <b>① あなたのニックネーム</b>
+      <input class="namein" id="inName" maxlength="10" placeholder="例:こうへい">
+      <b style="display:block;margin-top:14px;">② お子さんのなまえ(よびな)</b>
+      <input class="namein" id="inBaby" maxlength="10" placeholder="例:ぴーちゃん">
+    </div>
+    <div class="card">
+      <b>🚦 受診しんごうの見かた</b>
+      <p style="font-size:13px;font-weight:700;line-height:1.9;margin-top:6px;">ケース問題は、この3色で答えるよ。</p>
+      <div class="light-legend">
+        <div style="background:var(--mido);">🟢<br>おうちで<br>ようすみ</div>
+        <div style="background:var(--ki);color:var(--cho);">🟡<br>当日に<br>受診</div>
+        <div style="background:var(--aka);">🔴<br>今すぐ受診<br>#8000・119</div>
+      </div>
+      <p style="font-size:12px;font-weight:700;color:var(--cho-l);line-height:1.8;margin-top:8px;">画面の右下にはいつも🚨救急サインボタンがあるよ。困ったらすぐ開いてね。</p>
+    </div>
+    <button class="btn" id="bGo">ミッション スタート!</button>
+    <button class="btn ghost" id="bBack">もどる</button>`;
+  document.getElementById('bBack').onclick=()=>boot();
+  document.getElementById('bGo').onclick=async()=>{
+    S={started:true,name:document.getElementById('inName').value.trim()||'パパママ',
+       baby:document.getElementById('inBaby').value.trim()||'わが子',
+       exp:0,done:{},stars:{},caught:{},sosRead:false};
+    await save(); confetti(); toast('レスキュー隊、しゅつどう!');
+    showHome();
+  };
+}
+
+/* ---------- ホーム(マップ) ---------- */
+function showHome(){
+  showFab(true);
+  app.innerHTML=`${header()}
+    <div class="card" style="display:flex;gap:12px;align-items:center;">
+      <div style="width:64px;flex:none;animation:fuwa 3s infinite;">${pippoSVG('nico')}</div>
+      <div class="fukidashi">${esc(S.baby)}を守るレスキューミッション、はじめるピポ!<br>気になる島から、対処とクイズに挑戦しよう🚑</div>
+    </div>
+    <div class="kit-banner" id="bRed" style="background:linear-gradient(135deg,#FF8A7A,#E04B3D);box-shadow:0 6px 0 rgba(160,40,30,.3);">
+      <div style="font-size:34px;">🚨</div>
+      <div style="flex:1;">
+        <div style="font-weight:900;font-size:16px;">救急車を呼ぶサイン</div>
+        <div style="font-size:12px;font-weight:700;opacity:.95;">迷う前に確認!119のかけ方つき</div>
+      </div><div style="font-size:20px;">▶</div>
+    </div>
+    ${CH.map((c,i)=>{
+      const dc=doneCount(i), all=c.quests.length, comp=dc===all;
+      return `<div class="island" data-i="${i}">
+        ${c.feat?'<div class="feat">特集ミッション</div>':''}
+        <div class="ic" style="background:${c.col}">${c.emoji}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ttl">${c.age}</div>
+          <div class="sub">${c.name} / ミッション${all}つ</div>
+          <div class="prog">${comp?'👑 コンプリート!':'🏅 '+dc+' / '+all+' クリア'}</div>
+        </div>
+        <div style="font-size:20px;">▶</div>
+      </div>`;}).join('')}
+    <div class="menu-row">
+      <button class="mbtn" id="bZukan"><span>🃏</span>カードずかん</button>
+      <button class="mbtn" id="bBadge"><span>🏅</span>バッジ</button>
+      <button class="mbtn" id="bTitle"><span>🏠</span>タイトル</button>
+    </div>
+    <div class="notice">📖 これは年齢ごとの「よくある困りごと」と「対処・受診のめやす」を学ぶ一般的な学習用コンテンツで、診断・治療を行うものではありません。書かれているのは「目安」です。いつもと違う・どんどん悪くなる・不安が強い時は、目安にあてはまらなくても #8000・#7119・医療機関へ。</div>`;
+  document.querySelectorAll('.island').forEach(el=>el.onclick=()=>showChapter(+el.dataset.i));
+  document.getElementById('bRed').onclick=()=>showRed();
+  document.getElementById('bZukan').onclick=()=>showZukan();
+  document.getElementById('bBadge').onclick=()=>showBadges();
+  document.getElementById('bTitle').onclick=()=>showTitle(true);
+}
+
+/* ---------- 島(ミッション一覧) ---------- */
+function showChapter(ci){
+  showFab(true);
+  const c=CH[ci];
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <div class="card" style="background:${c.col};display:flex;gap:12px;align-items:center;">
+      <div style="font-size:40px;">${c.emoji}</div>
+      <div><h2 style="font-size:20px;">${c.age}</h2><div style="font-size:12px;font-weight:700;color:var(--cho-l);">${c.name}</div></div>
+    </div>
+    ${c.quests.map((q,qi)=>{
+      const key=c.id+'/'+q.id, dn=S.done[key], st=S.stars[key]||0;
+      return `<div class="quest" data-q="${qi}">
+        <div class="qic" style="background:${q.m.col};">${dn?q.m.av:'❓'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="qt">${q.e} ${q.t}</div>
+          <div class="qs">${dn?'おたすけカード「'+esc(q.m.n)+'」GET':'？？？ <span class="agetag">'+esc(q.m.age)+'</span>'}</div>
+          ${dn?`<div class="stars">${'★'.repeat(st)}${'☆'.repeat(q.quiz.length-st)}</div>`:''}
+        </div>
+        <div class="stamp">${dn?'GET!':'▶'}</div>
+      </div>`;}).join('')}`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.querySelectorAll('.quest').forEach(el=>el.onclick=()=>showLesson(ci,+el.dataset.q,0));
+}
+
+/* ---------- レッスン ---------- */
+function showLesson(ci,qi,page){
+  showFab(true);
+  const c=CH[ci], q=c.quests[qi], L=q.lesson, last=page===L.length-1, pg=L[page];
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← もどる</button>
+    <div class="center" style="margin-top:4px;"><span class="tag">${q.e} ${q.t}</span> <span class="agetag">${esc(q.m.age)}</span></div>
+    <div class="lesson-card">
+      <h3>${esc(pg.h)}</h3>
+      <div class="lesson-body">${pg.html?pg.html:('<p>'+esc(pg.b)+'</p>')}</div>
+      <div class="pippo-say">
+        <div style="width:54px;flex:none;">${pippoSVG('nico')}</div>
+        <div class="fukidashi">${last?'よし、レスキュー判断クイズに挑戦だピポ!':'つぎのページもチェックピポ〜'}</div>
+      </div>
+    </div>
+    <div class="dots">${L.map((_,i)=>`<i class="${i===page?'on':''}"></i>`).join('')}</div>
+    <div class="nav2">
+      ${page>0?'<button class="btn ghost" id="bPrev">← まえ</button>':''}
+      ${last?'<button class="btn yellow" id="bBattle">🚦 判断クイズへ!</button>':'<button class="btn blue" id="bNext">つぎへ →</button>'}
+    </div>`;
+  document.getElementById('bb').onclick=()=>showChapter(ci);
+  const bp=document.getElementById('bPrev'); if(bp) bp.onclick=()=>showLesson(ci,qi,page-1);
+  const bn=document.getElementById('bNext'); if(bn) bn.onclick=()=>showLesson(ci,qi,page+1);
+  const bb2=document.getElementById('bBattle'); if(bb2) bb2.onclick=()=>showBattle(ci,qi,0,0);
+  bindLessonExtras();
+}
+function bindLessonExtras(){
+  document.querySelectorAll('.age-tab').forEach(tab=>{
+    tab.onclick=()=>{
+      const baby=tab.dataset.tab==='baby';
+      document.querySelectorAll('.age-tab').forEach(t=>t.classList.toggle('on', t.dataset.tab===tab.dataset.tab));
+      const eb=document.getElementById('choke-baby'), ek=document.getElementById('choke-kid');
+      if(eb) eb.style.display=baby?'flex':'none';
+      if(ek) ek.style.display=baby?'none':'flex';
+    };
+  });
+}
+
+/* ---------- 判断クイズ(レスキューバトル) ---------- */
+function showBattle(ci,qi,no,correct){
+  showFab(true);
+  const c=CH[ci], q=c.quests[qi], QZ=q.quiz, total=QZ.length;
+  if(no>=total){ return showResult(ci,qi,correct); }
+  const item=QZ[no];
+  const isCase=!item.c;
+  const choices=isCase?LIGHTS:item.c;
+  const lightCls=['lt-g','lt-y','lt-r'];
+  const enemyHP=total-correct;
+  app.innerHTML=`${header()}
+    <div class="battle-field">
+      <div class="center" style="font-size:12px;font-weight:900;color:var(--cho-l);">レスキュー判断 ${no+1} / ${total}</div>
+      <div class="enemy-zone" id="ez">
+        <div class="monster-av" style="background:${q.m.col};">${q.m.av}</div>
+        <div class="hpwrap">
+          <div class="hpname">ピンチ ${esc(q.m.n)}</div>
+          <div class="hpbar"><div id="hpfill" style="width:${enemyHP/total*100}%"></div></div>
+        </div>
+      </div>
+      <div class="vs-pippo" id="vp"><div class="pp">${pippoSVG('ganba')}</div></div>
+      <div class="qbox">${isCase?'<span class="case-tag">🚦 受診しんごうで答えよう</span><br>':''}${esc(item.q)}</div>
+      <div id="choices">${choices.map((ch,i)=>`<button class="choice ${isCase?lightCls[i]:''}" data-i="${i}">${isCase?'':'🅰🅱🅲'[i]+' '}${esc(ch)}</button>`).join('')}</div>
+      <div id="after"></div>
+    </div>`;
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick=()=>{
+      const pick=+btn.dataset.i, ok=pick===item.a;
+      document.querySelectorAll('.choice').forEach(b=>{ b.disabled=true; b.style.pointerEvents='none';
+        if(+b.dataset.i===item.a) b.classList.add('ok'); else if(+b.dataset.i===pick) b.classList.add('ng'); });
+      const ez=document.getElementById('ez'), vp=document.getElementById('vp');
+      if(ok){
+        vp.classList.add('attack'); ez.classList.add('hit');
+        const beam=document.createElement('div'); beam.className='beam'; beam.textContent='🚑✨'; vp.appendChild(beam);
+        const newHP=total-(correct+1);
+        document.getElementById('hpfill').style.width=(newHP/total*100)+'%';
+        toast('ナイス判断!ピンチを切りぬけた!');
+      } else {
+        toast('だいじょうぶ、ここで覚えれば本番で動けるピポ!');
+      }
+      document.getElementById('after').innerHTML=`
+        <div class="kaisetsu">${ok?'🎯 ナイス判断!':'💡 こたえは「'+esc(choices[item.a])+'」'}\n${esc(item.k)}</div>
+        <button class="btn ${no+1>=total?'yellow':'blue'}" id="bNext2">${no+1>=total?'けっか へ!':'つぎのケースへ →'}</button>`;
+      document.getElementById('bNext2').onclick=()=>showBattle(ci,qi,no+1,correct+(ok?1:0));
+    };
+  });
+}
+
+/* ---------- リザルト(カード登録) ---------- */
+async function showResult(ci,qi,correct){
+  showFab(true);
+  const c=CH[ci], q=c.quests[qi], total=q.quiz.length, key=c.id+'/'+q.id;
+  const first=!S.done[key];
+  const gained = first ? 30+correct*10 : 5+correct*5;
+  S.done[key]=true; S.caught[key]=true;
+  S.stars[key]=Math.max(S.stars[key]||0, correct);
+  const beforeLv=lvOf(S.exp); S.exp+=gained; const afterLv=lvOf(S.exp);
+  await save();
+  const allDone=doneCount(ci)===c.quests.length;
+  confetti();
+  app.innerHTML=`${header()}
+    <div class="card result-pop">
+      <div class="big">${first?'おたすけカード GET!':'おさらいクリア!'}</div>
+      <div style="width:110px;margin:6px auto;animation:pyon 1s;">${pippoSVG('waku')}</div>
+      <div style="font-weight:900;">「${esc(q.m.n)}」のレスキュー法を覚えた✨</div>
+      <div class="bigstars">${'★'.repeat(correct)}${'☆'.repeat(total-correct)}</div>
+      <div class="exp-get">+${gained} EXP</div>
+      ${afterLv>beforeLv?`<div style="margin-top:10px;font-weight:900;color:var(--sakura-d);font-size:18px;animation:popin .5s;">🎺 レベルアップ! Lv.${afterLv}<br><span style="font-size:13px;">称号「${titleOf(afterLv)}」</span></div>`:''}
+      ${allDone?`<div style="margin-top:10px;font-weight:900;color:var(--mint-d);">👑 ${c.age} コンプリート!</div>`:''}
+    </div>
+    ${monsterCard(q.m,true)}
+    ${correct<total?'<button class="btn yellow" id="bRetry">もういちど挑戦して★満点をめざす</button>':''}
+    <button class="btn" id="bList">ミッション一覧へ</button>
+    <button class="btn ghost" id="bMap">マップへもどる</button>`;
+  const br=document.getElementById('bRetry'); if(br) br.onclick=()=>showBattle(ci,qi,0,0);
+  document.getElementById('bList').onclick=()=>showChapter(ci);
+  document.getElementById('bMap').onclick=()=>showHome();
+}
+
+/* ---------- カードずかん ---------- */
+function showZukan(detailKey){
+  showFab(true);
+  const mons=allMon();
+  if(detailKey){
+    const x=mons.find(z=>z.key===detailKey);
+    app.innerHTML=`${header()}
+      <button class="backbtn" id="bb" style="margin-top:12px;">← ずかんへ</button>
+      ${monsterCard(x.m, !!S.caught[x.key])}
+      ${S.caught[x.key]?'<button class="btn mint" id="bRe">レッスン&クイズをおさらいする</button>':'<button class="btn yellow" id="bRe">ミッションに出発して出会う!</button>'}`;
+    document.getElementById('bb').onclick=()=>showZukan();
+    document.getElementById('bRe').onclick=()=>showLesson(x.ci,x.qi,0);
+    return;
+  }
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <h2 class="center">🃏 おたすけカードずかん</h2>
+    <p class="center" style="font-size:12px;font-weight:700;color:var(--cho-l);margin-top:4px;">${caughtCount()} / ${totalQuests()} まい あつめた</p>
+    <div class="zukan-grid">
+      ${mons.map(x=>`<div class="zk${S.caught[x.key]?'':' locked'}" data-k="${x.key}">
+        <div class="za">${S.caught[x.key]?x.m.av:'❓'}</div>
+        <div class="zn">${S.caught[x.key]?esc(x.m.n):'？？？'}</div>
+      </div>`).join('')}
+    </div>
+    <div class="notice">カードをタップすると、こんな時・きけんな所・レスキューのコツが見られるよ。全${totalQuests()}まいコンプリートをめざせ!</div>`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.querySelectorAll('.zk').forEach(el=>el.onclick=()=>showZukan(el.dataset.k));
+}
+
+/* ---------- 救急車を呼ぶサイン ---------- */
+function showRed(){
+  showFab(false);
+  if(!S.sosRead){ S.sosRead=true; save(); }
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← もどる</button>
+    <div class="card" style="background:linear-gradient(135deg,#FFD9CF,#FFE9D6);display:flex;gap:12px;align-items:center;">
+      <div style="font-size:40px;">🚨</div>
+      <div><h2 style="font-size:19px;">救急車を呼ぶサイン</h2><div style="font-size:12px;font-weight:700;color:var(--cho-l);">ひとつでもあれば、ためらわず119番!</div></div>
+    </div>
+    ${REDSIGNS.map(r=>`<div class="redsign"><div class="ri">${r[0]}</div><div>${esc(r[1])}</div></div>`).join('')}
+    <h3 style="margin-top:20px;">📞 119番のかけ方</h3>
+    <div class="card"><div class="steps">${CALL119.map((c,i)=>STEP(i+1,esc(c))).join('')}</div></div>
+    <h3 style="margin-top:20px;">📞 まよったら、ここへ</h3>
+    <div class="tel-card" style="background:linear-gradient(135deg,#FF8FB1,#F06292);">
+      <a href="tel:%238000"><div style="font-size:13px;font-weight:900;">こども医療電話相談(夜間・休日の「どうしよう」に)</div>
+      <div class="num">#8000</div><div style="font-size:11px;font-weight:700;">タップで発信 / 小児科医・看護師が相談にのってくれます</div></a>
+    </div>
+    <div class="tel-card" style="background:linear-gradient(135deg,#8ED1E8,#5BAECB);">
+      <a href="tel:%237119"><div style="font-size:13px;font-weight:900;">救急車を呼ぶか迷ったら(対応地域)</div>
+      <div class="num">#7119</div><div style="font-size:11px;font-weight:700;">タップで発信 / 救急安心センター</div></a>
+    </div>
+    <div class="tel-card" style="background:linear-gradient(135deg,#FFB199,#FF6F61);">
+      <a href="tel:119"><div style="font-size:13px;font-weight:900;">反応がない・呼吸がおかしい・けいれんが続く</div>
+      <div class="num">119</div><div style="font-size:11px;font-weight:700;">ためらわず救急車を!</div></a>
+    </div>
+    <div class="tel-card" style="background:linear-gradient(135deg,#FFD27F,#E0A012);color:var(--cho);">
+      <a href="tel:0727272499" style="color:var(--cho);"><div style="font-size:13px;font-weight:900;">誤飲・中毒の応急処置を相談(大阪・24時間)</div>
+      <div class="num">中毒110番 072-727-2499</div><div style="font-size:11px;font-weight:700;">タップで発信 / 「何を・どれだけ・いつ・体重・今の様子」を伝えて</div></a>
+    </div>
+    <div class="notice">💬 少しでも「いつもと違う・怖い」と感じたら、迷わず連絡してください。判断に迷うのは当たり前。#8000・#7119は、そのための窓口です。</div>
+    <button class="btn" id="bHome2">もどる</button>`;
+  document.getElementById('bb').onclick=()=>S.started?showHome():showTitle(true);
+  document.getElementById('bHome2').onclick=()=>S.started?showHome():showTitle(true);
+}
+
+/* ---------- バッジ ---------- */
+function showBadges(){
+  showFab(true);
+  const lv=lvOf(S.exp);
+  const list=[
+    {i:'🚑',n:'はじめてのレスキュー',ok:totalDone()>=1,d:'はじめてのミッションをクリア'},
+    ...CH.map((c,ci)=>({i:c.emoji+'👑',n:c.age+'マスター',ok:doneCount(ci)===c.quests.length,d:c.age+'を全クリア'})),
+    {i:'🚨',n:'救急サイン マスター',ok:!!S.sosRead,d:'救急車を呼ぶサインを見た'},
+    {i:'🌟',n:'★パーフェクト判断',ok:Object.entries(S.stars).some(([k,v])=>{const[cid,qid]=k.split('/');const ch=CH.find(x=>x.id===cid);const qq=ch&&ch.quests.find(x=>x.id===qid);return qq&&v===qq.quiz.length;}),d:'どれかのミッションで全問正解'},
+    {i:'🃏',n:'カードコンプリート',ok:caughtCount()===totalQuests(),d:'おたすけカード全'+totalQuests()+'まい'},
+    {i:'💪',n:'Lv.10とっぱ',ok:lv>=10,d:'レベル10に到達'}
+  ];
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <h2 class="center">🏅 レスキューバッジ</h2>
+    <p class="center" style="font-size:12px;font-weight:700;color:var(--cho-l);margin-top:4px;">${list.filter(b=>b.ok).length} / ${list.length} こ あつめたよ</p>
+    <div class="badge-grid">
+      ${list.map(b=>`<div class="badge${b.ok?'':' locked'}"><div class="bi">${b.ok?b.i:'❓'}</div><div class="bn">${b.n}</div><div style="font-size:9px;color:var(--cho-l);font-weight:700;margin-top:2px;">${b.d}</div></div>`).join('')}
+    </div>`;
+  document.getElementById('bb').onclick=()=>showHome();
+}
+
+/* ---------- 起動 ---------- */
+fab.onclick=()=>showRed();
+async function boot(){
+  const has=await load();
+  showTitle(!!(has && S.started));
+}
+boot();
+</script>
+</body>
+</html>
