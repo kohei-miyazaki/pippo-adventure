@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ピッポアドベンチャー2 〜びょうきモンスターずかんの巻〜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sora:#8ED1E8; --sakura:#FF8FB1; --sakura-d:#F06292;
+  --cream:#FFF7E6; --himawari:#FFD166; --mint:#7FE0B6; --mint-d:#34C99A;
+  --cho:#5B4636; --cho-l:#8A7461; --shiro:#FFFFFF;
+  --aka:#FF6F61; --aka-d:#E04B3D; --ki:#FFC53D; --ki-d:#E0A012; --mido:#6FCF7C; --mido-d:#4CAF5E;
+  --kage:0 6px 0 rgba(91,70,54,.12);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','BIZ UDGothic',sans-serif;
+  background:linear-gradient(180deg,#BDE8F5 0%,#FDF3DC 60%,#FFF7E6 100%);
+  color:var(--cho); display:flex; justify-content:center;
+  min-height:100%; overflow-x:hidden;
+}
+#stage{width:100%; max-width:430px; min-height:100dvh; position:relative; display:flex; flex-direction:column;}
+#app{flex:1; display:flex; flex-direction:column; padding:14px 14px 90px; animation:fadein .3s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+@keyframes pyon{0%,100%{transform:translateY(0);}40%{transform:translateY(-16px);}60%{transform:translateY(-8px);}}
+@keyframes yura{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+@keyframes puru{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes kira{0%{opacity:0; transform:scale(.3);}50%{opacity:1; transform:scale(1.2);}100%{opacity:0; transform:scale(.6) translateY(-30px);}}
+@keyframes fuwa{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes popin{0%{transform:scale(0);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important;}}
+h1,h2,h3{font-weight:900;}
+.center{text-align:center;}
+
+.btn{display:block; width:100%; border:none; cursor:pointer; font-family:inherit; font-weight:900; font-size:18px; color:#fff;
+  background:var(--sakura); border-radius:28px; padding:16px; box-shadow:0 5px 0 var(--sakura-d); transition:transform .08s; margin-top:12px;}
+.btn:active{transform:translateY(4px); box-shadow:0 1px 0 var(--sakura-d);}
+.btn.blue{background:var(--sora); box-shadow:0 5px 0 #5BAECB;} .btn.blue:active{box-shadow:0 1px 0 #5BAECB;}
+.btn.mint{background:var(--mint); box-shadow:0 5px 0 var(--mint-d);} .btn.mint:active{box-shadow:0 1px 0 var(--mint-d);}
+.btn.yellow{background:var(--himawari); color:var(--cho); box-shadow:0 5px 0 #E0AC2E;} .btn.yellow:active{box-shadow:0 1px 0 #E0AC2E;}
+.btn.ghost{background:#fff; color:var(--cho-l); box-shadow:0 4px 0 #E8DCC8; font-weight:700;}
+.card{background:#fff; border-radius:22px; padding:18px; box-shadow:var(--kage); margin-top:12px;}
+.tag{display:inline-block; background:var(--himawari); color:var(--cho); font-size:12px; font-weight:900; border-radius:99px; padding:3px 12px;}
+.agetag{display:inline-block; background:#EAF6FB; color:#3D7E99; font-size:11px; font-weight:900; border-radius:99px; padding:2px 10px; border:2px solid #BDE3F0;}
+
+.topbar{display:flex; align-items:center; gap:10px; background:#fff; border-radius:18px; padding:10px 14px; box-shadow:var(--kage);}
+.topbar .face{width:46px; height:48px; flex:none;}
+.topbar .info{flex:1; min-width:0;}
+.topbar .nm{font-weight:900; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.topbar .lv{font-size:11px; color:var(--cho-l); font-weight:700;}
+.expbar{height:10px; background:#F2E7D5; border-radius:99px; overflow:hidden; margin-top:3px;}
+.expbar > div{height:100%; background:linear-gradient(90deg,var(--himawari),var(--sakura)); border-radius:99px; transition:width .5s;}
+.backbtn{border:none; background:#fff; font-family:inherit; font-weight:900; color:var(--cho-l); font-size:14px; border-radius:99px; padding:8px 16px; box-shadow:var(--kage); cursor:pointer; align-self:flex-start; margin-bottom:4px;}
+
+.island{display:flex; align-items:center; gap:14px; background:#fff; border-radius:24px; padding:14px 16px; box-shadow:var(--kage); margin-top:14px; cursor:pointer; border:3px solid transparent; position:relative; transition:transform .1s;}
+.island:active{transform:scale(.97);}
+.island .ic{width:58px; height:58px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px;}
+.island .ttl{font-weight:900; font-size:16px;}
+.island .sub{font-size:12px; color:var(--cho-l); font-weight:700; margin-top:2px;}
+.island .prog{font-size:11px; font-weight:900; color:var(--mint-d); margin-top:4px;}
+.kit-banner{display:flex; align-items:center; gap:12px; border-radius:24px; padding:14px 16px; margin-top:14px; color:#fff; cursor:pointer;}
+.kit-banner:active{transform:scale(.97);}
+.menu-row{display:flex; gap:10px; margin-top:14px;}
+.menu-row .mbtn{flex:1; background:#fff; border:none; border-radius:18px; padding:12px 6px; font-family:inherit; font-weight:900; color:var(--cho); box-shadow:var(--kage); cursor:pointer; font-size:13px;}
+.menu-row .mbtn span{display:block; font-size:24px; margin-bottom:4px;}
+.menu-row .mbtn:active{transform:scale(.95);}
+
+.quest{display:flex; align-items:center; gap:12px; background:#fff; border-radius:20px; padding:14px; box-shadow:var(--kage); margin-top:12px; cursor:pointer;}
+.quest:active{transform:scale(.97);}
+.quest .qic{width:48px; height:48px; flex:none; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:26px;}
+.quest .qt{font-weight:900; font-size:15px;}
+.quest .qs{font-size:11px; color:var(--cho-l); font-weight:700; margin-top:2px;}
+.quest .stamp{margin-left:auto; flex:none; font-size:13px; font-weight:900; color:var(--mint-d);}
+.stars{color:#FFB400; font-size:13px; letter-spacing:1px;}
+
+.lesson-card{background:#fff; border-radius:26px; padding:22px 20px; box-shadow:var(--kage); margin-top:12px; min-height:300px; display:flex; flex-direction:column;}
+.lesson-card h3{font-size:19px; color:var(--sakura-d); margin-bottom:12px;}
+.lesson-card p{font-size:15px; line-height:1.9; font-weight:700; white-space:pre-line; flex:1;}
+.lesson-card .pippo-say{display:flex; gap:10px; align-items:flex-end; margin-top:16px;}
+.fukidashi{background:var(--cream); border-radius:16px; padding:10px 14px; font-size:13px; font-weight:700; line-height:1.7; position:relative; flex:1;}
+.dots{display:flex; justify-content:center; gap:8px; margin-top:14px;}
+.dots i{width:10px; height:10px; border-radius:50%; background:#E8DCC8;}
+.dots i.on{background:var(--sakura); transform:scale(1.25);}
+.nav2{display:flex; gap:10px;} .nav2 .btn{flex:1;}
+
+.battle-field{background:linear-gradient(180deg,#C9EBF7,#FDF3DC); border-radius:26px; padding:18px 14px 14px; box-shadow:var(--kage); margin-top:10px;}
+.enemy-zone{text-align:center; position:relative;}
+.monster-av{width:104px; height:104px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:56px; border:4px solid rgba(91,70,54,.18); box-shadow:0 5px 0 rgba(91,70,54,.12); animation:yura 2.5s infinite;}
+.enemy-zone.hit .monster-av{animation:puru .35s;}
+.hpwrap{max-width:230px; margin:8px auto 0;}
+.hpname{font-size:12px; font-weight:900;}
+.hpbar{height:12px; background:#fff; border-radius:99px; overflow:hidden; border:2px solid #D9C9B3;}
+.hpbar > div{height:100%; background:linear-gradient(90deg,#B39DDB,#7E57C2); transition:width .4s; border-radius:99px;}
+.vs-pippo{text-align:center; margin-top:6px;}
+.vs-pippo .pp{width:88px; display:inline-block;}
+.vs-pippo.attack .pp{animation:pyon .5s;}
+.qbox{background:#fff; border-radius:18px; padding:14px; margin-top:10px; font-weight:900; font-size:15px; line-height:1.8;}
+.qbox .case-tag{display:inline-block; background:var(--sora); color:#fff; font-size:11px; border-radius:99px; padding:2px 10px; margin-bottom:6px;}
+.choice{display:block; width:100%; text-align:left; background:#fff; border:3px solid #F0E4D0; border-radius:18px; padding:13px 14px; font-family:inherit; font-weight:700; font-size:14px; color:var(--cho); margin-top:10px; cursor:pointer; line-height:1.6;}
+.choice:active{transform:scale(.98);}
+.choice.ok{border-color:var(--mint-d); background:#EAFBF3;}
+.choice.ng{border-color:var(--sakura-d); background:#FFEEF3;}
+.choice.lt-g{border-color:var(--mido);} .choice.lt-y{border-color:var(--ki);} .choice.lt-r{border-color:var(--aka);}
+.choice.lt-g.ok{background:#EDFBEF;} .choice.lt-y.ok{background:#FFF8E2;} .choice.lt-r.ok{background:#FFEFEA;}
+.kaisetsu{background:#FFFBEF; border:2px dashed var(--himawari); border-radius:16px; padding:12px; font-size:13px; font-weight:700; line-height:1.8; margin-top:10px; white-space:pre-line;}
+.beam{position:absolute; left:50%; bottom:-4px; font-size:30px; animation:kira .7s forwards; pointer-events:none;}
+
+.result-pop{text-align:center; padding:10px 0;}
+.result-pop .big{font-size:26px; font-weight:900; color:var(--sakura-d); animation:popin .4s;}
+.bigstars{font-size:40px; color:#FFB400; margin:8px 0; letter-spacing:6px;}
+.exp-get{display:inline-block; background:var(--himawari); border-radius:99px; padding:6px 18px; font-weight:900; margin-top:6px;}
+
+/* モンスターカード */
+.mcard{background:#fff; border-radius:22px; box-shadow:var(--kage); margin-top:12px; overflow:hidden; border:3px solid #F0E4D0;}
+.mcard .mhead{display:flex; align-items:center; gap:12px; padding:14px 16px;}
+.mcard .mav{width:62px; height:62px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:34px; border:3px solid rgba(91,70,54,.15);}
+.mcard .mname{font-weight:900; font-size:17px;}
+.mcard .mreal{font-size:11px; font-weight:700; color:var(--cho-l);}
+.mcard .mbody{padding:0 16px 14px; font-size:13px; font-weight:700; line-height:1.8;}
+.mrow{display:flex; gap:8px; margin-top:8px; align-items:flex-start;}
+.mrow .ml{flex:none; background:var(--cream); border-radius:99px; padding:2px 10px; font-size:11px; font-weight:900;}
+.mrow .mv{flex:1; white-space:pre-line;}
+
+/* ずかん */
+.zukan-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px;}
+.zk{background:#fff; border-radius:16px; padding:8px 4px; text-align:center; box-shadow:var(--kage); cursor:pointer;}
+.zk .za{font-size:28px;}
+.zk .zn{font-size:9px; font-weight:900; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.zk.locked{opacity:.45; filter:grayscale(1);}
+.zk:active{transform:scale(.93);}
+
+/* レッドサイン */
+.redsign{display:flex; gap:10px; align-items:center; background:#fff; border-radius:16px; padding:12px 14px; box-shadow:var(--kage); margin-top:10px; font-weight:900; font-size:13.5px; line-height:1.6; border-left:6px solid var(--aka);}
+.redsign .ri{font-size:20px; flex:none;}
+.tel-card{border-radius:20px; padding:16px; margin-top:12px; color:#fff; box-shadow:var(--kage);}
+.tel-card .num{font-size:26px; font-weight:900; letter-spacing:1px;}
+.tel-card a{color:#fff; text-decoration:none; display:block;}
+.accordion{background:#fff; border-radius:18px; box-shadow:var(--kage); margin-top:10px; overflow:hidden;}
+.accordion .acc-h{padding:14px; font-weight:900; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px;}
+.accordion .acc-b{display:none; padding:0 16px 14px; font-size:13px; font-weight:700; line-height:1.9; white-space:pre-line;}
+.accordion.open .acc-b{display:block;}
+.accordion .arr{margin-left:auto; transition:transform .2s;}
+.accordion.open .arr{transform:rotate(90deg);}
+
+.badge-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.badge{background:#fff; border-radius:18px; padding:12px 6px; text-align:center; box-shadow:var(--kage);}
+.badge .bi{font-size:32px;}
+.badge .bn{font-size:11px; font-weight:900; margin-top:4px;}
+.badge.locked{opacity:.4; filter:grayscale(1);}
+
+input.namein{width:100%; border:3px solid #F0E4D0; border-radius:18px; padding:13px; font-family:inherit; font-weight:700; font-size:16px; margin-top:10px; outline:none; color:var(--cho);}
+input.namein:focus{border-color:var(--sora);}
+
+.title-wrap{flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding-bottom:30px;}
+.logo-sub{font-size:13px; font-weight:900; color:var(--cho-l); letter-spacing:2px;}
+.logo-main{font-size:33px; font-weight:900; color:var(--sakura-d); text-shadow:3px 3px 0 #fff; line-height:1.3; margin:6px 0;}
+.title-pippo{width:175px; margin:10px auto; animation:fuwa 2.6s infinite;}
+.clouds{position:absolute; top:18px; width:100%; left:0; display:flex; justify-content:space-around; font-size:34px; opacity:.8; pointer-events:none;}
+.clouds span{animation:fuwa 4s infinite;}
+.clouds span:nth-child(2){animation-delay:1.3s;}
+.clouds span:nth-child(3){animation-delay:2.2s;}
+.line-note{font-size:11px; color:var(--cho-l); font-weight:700; margin-top:14px; line-height:1.7;}
+
+#toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--cho); color:#fff; font-weight:900; font-size:13px; padding:10px 20px; border-radius:99px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:99; max-width:90%; text-align:center;}
+#toast.show{opacity:1;}
+.confetti{position:fixed; top:-10px; font-size:20px; animation:cfall 2.4s linear forwards; pointer-events:none; z-index:98;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);}}
+.notice{font-size:12px; color:var(--cho-l); font-weight:700; line-height:1.8; background:#FFFDF6; border-radius:14px; padding:10px 12px; margin-top:12px; border:2px dashed #EAD9BC;}
+.light-legend{display:flex; gap:6px; margin-top:10px;}
+.light-legend div{flex:1; border-radius:14px; padding:8px 4px; text-align:center; font-size:10.5px; font-weight:900; color:#fff; line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="clouds" aria-hidden="true"><span>☁️</span><span>☁️</span><span>☁️</span></div>
+  <div id="app" role="main"></div>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ============================================================
+   ピッポアドベンチャー2 〜びょうきモンスターずかんの巻〜
+   0歳〜6歳の「病気と成長の冒険マップ」/ 子ども救急LINE BOT 連携
+============================================================ */
+
+/* ---------- 救急サインQRコード(子ども救急LINE BOT) ---------- */
+const QR_IMG='data:image/jpeg;base64,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';
+
+/* ---------- ピッポせんせい(聴診器つき) SVG ---------- */
+function pippoSVG(mood){ // 'nico' | 'waku' | 'ganba' いずれも聴診器つきのピッポせんせい
+  const extra = mood==='ganba'
+    ? '<path d="M30 38 L41 41 M70 38 L59 41" stroke="#4A3320" stroke-width="3" stroke-linecap="round"/>'
+    : mood==='waku'
+    ? '<path d="M30 70 q4 5 9 3 M70 70 q-4 5 -9 3" stroke="#4A3320" stroke-width="2.5" fill="none" stroke-linecap="round"/><text x="80" y="14" font-size="13">✨</text>'
+    : '';
+  const eyeHi = mood==='waku' ? 2.4 : 1.8;
+  return `<svg viewBox="0 0 100 104" xmlns="http://www.w3.org/2000/svg" aria-label="ピッポせんせい">
+    <circle cx="50" cy="54" r="48" fill="#FBF3C9"/>
+    <ellipse cx="50" cy="99" rx="26" ry="4" fill="rgba(91,70,54,.12)"/>
+    <path d="M40 98 v4 M46 100 v3 M54 100 v3 M60 98 v4" stroke="#E8912D" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M47 13 q-3 -9 3 -11 q5 3 1 11 M52 13 q2 -9 8 -8 q3 5 -5 9" fill="#FFE9A8" stroke="#7A4E2B" stroke-width="2.6" stroke-linejoin="round"/>
+    <circle cx="50" cy="57" r="40" fill="#FFE38E" stroke="#7A4E2B" stroke-width="3.5"/>
+    <path d="M22 36 q26 -14 56 0" fill="none" stroke="#FFF2BE" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+    <ellipse cx="12.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(14 12.5 66)"/>
+    <ellipse cx="87.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(-14 87.5 66)"/>
+    <path d="M43 21 Q50 16 57 21" fill="none" stroke="#5B4030" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="31" cy="22" r="12.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.5"/>
+    <circle cx="69" cy="22" r="12.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.5"/>
+    <ellipse cx="27" cy="18" rx="5" ry="3.4" fill="#fff" opacity=".9" transform="rotate(-25 27 18)"/>
+    <ellipse cx="65" cy="18" rx="5" ry="3.4" fill="#fff" opacity=".9" transform="rotate(-25 65 18)"/>
+    <circle cx="36" cy="48" r="5.6" fill="#3A2A1A"/><circle cx="64" cy="48" r="5.6" fill="#3A2A1A"/>
+    <circle cx="38" cy="46" r="${eyeHi}" fill="#fff"/><circle cx="66" cy="46" r="${eyeHi}" fill="#fff"/>
+    <circle cx="26" cy="59" r="5.6" fill="#F9A8C0" opacity=".85"/><circle cx="74" cy="59" r="5.6" fill="#F9A8C0" opacity=".85"/>
+    <path d="M50 51 L58.5 58.5 L50 66 L41.5 58.5 Z" fill="#F6A21F" stroke="#C97A12" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M50 51 L58.5 58.5 L41.5 58.5 Z" fill="#FFC04D"/>
+    <path d="M30 78 q20 14 40 0" fill="none" stroke="#6FA8DC" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="30" cy="78" r="3" fill="#6FA8DC"/><circle cx="70" cy="78" r="3" fill="#6FA8DC"/>
+    <circle cx="50" cy="90" r="5.5" fill="#E8F1FA" stroke="#6FA8DC" stroke-width="3"/>
+    ${extra}
+  </svg>`;
+}
+
+/* ---------- 受診しんごう(共通の3択) ---------- */
+const LIGHTS=[
+ '🟢 おうちでケア&ようすみ',
+ '🟡 きょう〜あす、診療時間内に受診',
+ '🔴 いますぐ受診!(夜間でも / #8000・119)'
+];
+
+/* ---------- ステージ&クエストデータ ----------
+   m = モンスター情報 {n:なまえ, real:正式な病名, age:出やすい年齢, waza:とくいわざ(症状), weak:よわてん(対処), col:色, av:絵文字}
+   quiz = {q, c?(自由3択), a, k}  cが無い問題は受診しんごう(LIGHTS)3択
+---------------------------------------------- */
+const CH=[
+{ id:'umare', name:'うまれたての島', age:'0〜1ヶ月ごろ', emoji:'🐣', col:'#FFE3EA',
+  quests:[
+  { id:'aoiron', t:'顔色と呼吸のSOS', e:'💙',
+    m:{n:'アオイロン', real:'チアノーゼ(先天性心疾患・呼吸の病気)', age:'生まれてすぐ〜', av:'😶‍🌫️', col:'#D6E4FF',
+       waza:'くちびる・舌・顔色を青むらさきにする「チアノーゼの術」', weak:'唇や舌の色・呼吸の速さを毎日チェック。青い+苦しそうは119!'},
+    lesson:[
+      {h:'赤ちゃんの「色」を見よう', b:'赤ちゃんのSOSは「色」に出ます。\n\n・くちびるや舌が青むらさき=チアノーゼ\n・顔色が白っぽい、土気色\n\n手足の先だけ少し紫(泣いた時など)はよくありますが、「くちびる・舌」の青さは心臓や肺のSOSのことが。先天性心疾患は約100人に1人と、実はめずらしくない病気。早く見つかれば治療の道がしっかりあります。'},
+      {h:'呼吸のSOSサイン', b:'・呼吸がいつもよりずっと速い\n・肋骨の間やみぞおちがペコペコへこむ(陥没呼吸)\n・うなるような呼吸、鼻の穴がヒクヒク\n・ミルクのたびに疲れて汗だく、途中で休んでしまう\n\nこうしたサイン+体重が増えない時は、心臓の病気がかくれていることも。検診を待たずに相談してOKです。'}],
+    quiz:[
+      {q:'【ケース】生後10日。くちびると舌が青むらさきで、呼吸が速くゼーゼーしている。', a:2, k:'くちびる・舌のチアノーゼ+呼吸が苦しそうは、心臓や肺の緊急サイン。ためらわず119/すぐ受診です。'},
+      {q:'【ケース】生後3週。ミルクのたびに汗びっしょりで途中で疲れて休む。体重の増えもゆっくり。機嫌は普通。', a:1, k:'今この瞬間の緊急ではないけれど、心疾患のサインの可能性。早めに(今日〜明日)小児科で心音や体重を診てもらいましょう。'}]},
+  { id:'kiiron', t:'黄疸ものがたり', e:'💛',
+    m:{n:'キイロン', real:'新生児黄疸 / 先天性胆道閉鎖症', age:'生後すぐ〜1ヶ月', av:'🟡', col:'#FFF3C2',
+       waza:'肌と白目をきいろに染める「おうだんの術」', weak:'2週間以上つづく黄疸+白っぽいうんちは要注意。便色カードでチェック!'},
+    lesson:[
+      {h:'ほとんどは「生理的黄疸」', b:'生後2〜3日から肌が黄色くなるのは、多くの赤ちゃんに起こる生理的黄疸。赤ちゃんの肝臓がまだ練習中だから起こる、通過儀礼のようなものです。多くは2週間ほどで薄くなります。\n\n強い黄疸は産院で光線療法(ライトを当てる治療)でケアします。'},
+      {h:'見逃したくない「白いうんち」', b:'こんな時は要注意!\n\n・黄疸が2週間すぎても濃くなっていく\n・うんちが白っぽい、クリーム色\n・おしっこが濃い茶色\n\nこれは胆道閉鎖症のサインかも。胆汁の通り道がふさがる病気で、生後60日までの早い手術がとても大事。母子手帳の「便色カード」と毎日見くらべるのが最強の武器です。'}],
+    quiz:[
+      {q:'【ケース】生後5日。顔が少し黄色いが、母乳をよく飲み、うんちは黄色で元気。', a:0, k:'典型的な生理的黄疸の経過。産院の健診でもチェックされるので、おうちで様子見でOKです。'},
+      {q:'【ケース】生後3週半。黄疸がむしろ濃くなり、うんちが白っぽいクリーム色。', a:2, k:'白い便+続く黄疸は胆道閉鎖症のサインかも。早い治療が勝負の病気なので、すぐ受診してください。便のおむつを持参か写真を撮って見せると◎。'}]},
+  { id:'funsuin', t:'噴水みたいに吐く!?', e:'⛲',
+    m:{n:'フンスイン', real:'肥厚性幽門狭窄症 / 腸回転異常症', age:'生後2週〜2ヶ月', av:'🌊', col:'#D7F2FF',
+       waza:'飲んだミルクを噴水のように飛ばす「ふんすいゲロの術」', weak:'手術や治療でしっかり治せる。緑色の嘔吐は超レッドサイン!'},
+    lesson:[
+      {h:'肥厚性幽門狭窄症', b:'生後2週間〜2ヶ月ごろ、胃の出口の筋肉が厚くなりすぎてミルクが通れなくなる病気。\n\n・飲むたび「噴水のように」勢いよく吐く\n・吐いたのにまたすぐ欲しがる(おなかは空く)\n・体重が増えない、おしっこが減る\n\nこわい名前だけど、手術でしっかり治る病気です。「よく吐く子だな」と思ったら動画を撮って受診を。'},
+      {h:'緑色の嘔吐はぜったい受診', b:'吐いたものが緑色(胆汁の色)の時は、腸がねじれる腸回転異常症などの緊急サイン。\n\nふだんの「タラッと吐きもどし(溢乳)」は心配いりませんが、\n・緑色を吐く\n・おなかがパンパンに張る\n・ぐったりしている\nこの組み合わせは夜中でもすぐ受診です。'}],
+    quiz:[
+      {q:'【ケース】生後1ヶ月。授乳のあと口の横からタラッと少し吐きもどすが、機嫌よく体重も増えている。', a:0, k:'これは「溢乳(いつにゅう)」というよくある吐きもどし。げっぷと少し縦抱きキープで減ります。様子見でOK。'},
+      {q:'【ケース】生後3週。今日2回、緑色のものを吐いて、おなかが張ってぐったり。', a:2, k:'緑色の嘔吐は腸のねじれ(腸回転異常症)を疑う超緊急サイン。時間勝負なので、夜中でもすぐ受診/119です。'}]},
+  { id:'netsubaby', t:'3ヶ月未満の発熱はレッドカード', e:'🚨',
+    m:{n:'ネツネツベビー', real:'新生児・乳児早期の発熱(敗血症・髄膜炎・尿路感染症など)', age:'生後0〜3ヶ月', av:'🌡️', col:'#FFE0DB',
+       waza:'小さな体に重い感染症をかくす「かくれんぼの術」', weak:'3ヶ月未満の38℃以上は、元気そうでも夜中でも受診。これだけは丸暗記!'},
+    lesson:[
+      {h:'この時期だけの特別ルール', b:'生後3ヶ月未満の赤ちゃんの「38℃以上の発熱」は、たとえ機嫌がよくても夜中でも受診——これは世界共通のルールです。\n\n理由は、小さな赤ちゃんは敗血症・髄膜炎・尿路感染症などの重い感染症でも、見た目は意外と元気そうに見えることがあるから。病院で尿や血液を調べて確かめます。\n\n「大げさかな?」と思っても大げさじゃありません。むしろ連れて来てくれてありがとう、の世界です。'},
+      {h:'熱以外にもこんなサイン', b:'3ヶ月未満で受診したいサイン:\n・ミルクの飲みが半分以下になった\n・咳きこんで呼吸が止まりそうになる(百日咳やRSは小さい子ほど無呼吸に注意)\n・うとうとして起きない、泣き声が弱い\n・低体温(36℃未満でぐったり)\n\n体温計は元気な時に平熱を測っておくと、いざという時の比較に役立ちます。'}],
+    quiz:[
+      {q:'【ケース】生後2ヶ月。夜10時に38.3℃。ミルクは飲めて、わりと機嫌もよい。', a:2, k:'3ヶ月未満の38℃以上は「元気そうでも」即受診が鉄則。重い感染症がかくれていないか調べる必要があります。'},
+      {q:'3ヶ月未満の発熱で正しいのは？', c:['元気なら朝まで様子見でよい','機嫌がよくても夜中でも受診','解熱剤で下がれば安心'], a:1, k:'この月齢だけの特別ルール。「3ヶ月未満の38℃は即受診」とおまじないのように覚えてください。'}]}
+]},
+{ id:'milk', name:'ミルクの森', age:'生後2週〜6ヶ月ごろ', emoji:'🌲', col:'#E2F6E9',
+  quests:[
+  { id:'fuenain', t:'体重がふえないナゾ', e:'⚖️',
+    m:{n:'フエナイン', real:'哺乳不良・体重増加不良(心疾患・甲状腺機能低下症など)', age:'生後2週〜', av:'🪶', col:'#EDE5FF',
+       waza:'成長曲線をじわじわ下にずらす「ふえないの術」', weak:'多くは授乳の工夫で改善!曲線が下にずれ続けたら早めに相談。'},
+    lesson:[
+      {h:'まずは授乳の見直しから', b:'体重が増えない原因のいちばん多くは「飲む量が足りていない」こと。くわえ方・回数・ミルクの足し方の工夫で改善することがほとんどで、ママのせいではありません。\n\n目安:生後3ヶ月ごろまで1日25〜30g増。母子手帳の成長曲線に点を打って、「その子のカーブ」で増えているかを見ましょう。'},
+      {h:'病気がかくれていることも', b:'飲んでいるのに増えない時は、こんな病気を確認します。\n\n・先天性心疾患…飲むと疲れる、汗だく、呼吸が速い\n・甲状腺機能低下症…生まれた時の「マススクリーニング検査」でほぼ見つかります。黄疸が長引く、便秘、動きが少ない\n\nどちらも早く見つけて治療すればしっかり育ちます。「増えない」が続いたら検診を待たずに小児科へ。'}],
+    quiz:[
+      {q:'体重がふえない原因でいちばん多いのは？', c:['重い病気','飲む量が足りていない(授乳の工夫で改善)','体質なので何もできない'], a:1, k:'まずは授乳の回数・くわえ方・ミルクの足し方の見直しから。助産師さん・小児科が力になります。'},
+      {q:'【ケース】生後1ヶ月半。成長曲線がだんだん下へ。授乳のたび汗をかいて疲れて寝てしまう。', a:1, k:'飲み疲れ+体重停滞は心疾患チェックのサイン。早めに(今日〜明日)小児科で心音・体重を診てもらいましょう。'}]},
+  { id:'panpakapan', t:'おなかパンパン事件', e:'🎈',
+    m:{n:'パンパカパン', real:'ヒルシュスプルング病', age:'新生児期〜', av:'🥁', col:'#FFE9D6',
+       waza:'腸の神経をかくして、うんちをせき止める「パンパンの術」', weak:'生後24時間うんちが出ない・張る・吐くは受診。手術で治せる病気!'},
+    lesson:[
+      {h:'ヒルシュスプルング病って？', b:'生まれつき腸の一部に「動かすための神経」がなく、うんちを先に送れない病気(約5000人に1人)。\n\nサインは:\n・生まれて24時間以上うんちが出ない\n・おなかがパンパンに張る\n・吐く、ミルクを飲まない\n\n手術でしっかり治せる病気です。「新生児なのに便秘がひどい+張る」は、ただの便秘と思わず受診を。\n\nふつうの赤ちゃんでも2〜3日出ないことはありますが、機嫌よく飲めて張っていなければ様子見OK(綿棒浣腸も活躍)。'}],
+    quiz:[
+      {q:'【ケース】生後5日。丸1日以上うんちが出ず、おなかがパンパンでミルクも吐いてしまう。', a:2, k:'新生児の「出ない+張る+吐く」はヒルシュスプルング病など腸の病気を疑うサイン。すぐ受診です。'},
+      {q:'【ケース】生後2ヶ月。うんちが2日出ていないが、おなかは柔らかく、ごきげんでよく飲む。', a:0, k:'飲めて機嫌よく張りがなければ様子見OK。綿棒浣腸や「の」の字マッサージを試してみて。'}]},
+  { id:'oshikkomoyan', t:'かくれた熱のもと・尿路感染症', e:'🔥',
+    m:{n:'オシッコモヤン', real:'尿路感染症(腎盂腎炎など)', age:'0〜2歳に多い', av:'💧', col:'#D7F2FF',
+       waza:'咳も鼻水もないのに高熱を出す「かくれ熱の術」', weak:'原因不明の高熱はおしっこ検査!抗菌薬でしっかり治す。'},
+    lesson:[
+      {h:'「かぜ症状のない高熱」の正体', b:'おしっこの通り道にばい菌が入る病気。まだ「痛い」と言えない赤ちゃんでは、咳も鼻水もないのに高熱だけ、というのが典型です。\n\n・受診すると「おしっこの検査」をするのはこのため\n・抗菌薬でしっかり治すことが大事(腎臓を守るため)\n・繰り返す時は、おしっこの逆流(膀胱尿管逆流)がないか検査することも\n\n予防はおむつ替えをこまめに+「前→後ろ」拭き。第1章で学んだワザがここで効いてきます!'}],
+    quiz:[
+      {q:'【ケース】8ヶ月の女の子。咳も鼻水もないのに39℃の熱が2日目。機嫌はいまいち。', a:1, k:'かぜ症状のない高熱は尿路感染症の可能性。診療時間内に受診して、おしっこの検査をしてもらいましょう(ぐったり・飲めないなら🔴に格上げ)。'},
+      {q:'尿路感染症の予防に役立つのは？', c:['おしりを後ろ→前に拭く','おしりを前→後ろに拭く+こまめなおむつ替え','水分を控える'], a:1, k:'うんちの菌を尿道に近づけないのがコツ。第1章の「おむつ交換マスター」の知識が予防薬です。'}]}
+]},
+{ id:'onetsu', name:'おねつ火山', age:'6ヶ月〜3歳に多い', emoji:'🌋', col:'#FFE0DB',
+  quests:[
+  { id:'netsuboon', t:'発熱のきほんマスター', e:'🌡️',
+    m:{n:'ネツボーン', real:'発熱(からだの防御反応)', age:'すべての年齢', av:'🔥', col:'#FFD9CF',
+       waza:'体温を上げてばい菌と戦う…実は味方!?「ぼうぎょ発熱」', weak:'高さより「様子」。水分・睡眠・つらい時だけ解熱剤。'},
+    lesson:[
+      {h:'熱は「敵」じゃなくて防御反応', b:'発熱は、体がばい菌・ウイルスと戦うためにわざと体温を上げている状態。熱の高さそのものより「全身の様子」が大事です。\n\n見るポイント:\n・水分がとれているか\n・あやすと笑う?視線が合う?\n・おしっこは出ている?\n・呼吸は苦しくない?\n\n40℃でもニコニコ水分OKなら一晩待てることも。38℃でもぐったりなら受診です。'},
+      {h:'解熱剤とホームケア', b:'・解熱剤は「病気を治す薬」ではなく「つらさを楽にする薬」。眠れない・飲めない時に使う\n・量と種類は必ず小児科の指示で(大人用や兄姉の薬の流用NG)\n・寒気でふるえる時は温め、熱が上がりきってほてったら薄着+わきや首すじを冷やす\n・水分は少量ずつこまめに\n\n🔴受診サイン:3ヶ月未満の発熱/ぐったり・呼びかけに反応が鈍い/水分がとれない/けいれん/呼吸が苦しそう'}],
+    quiz:[
+      {q:'【ケース】1歳2ヶ月。39.5℃だが、麦茶を飲み、おもちゃで遊び、おしっこも出ている。夜8時。', a:0, k:'熱は高いけれど全身状態が良いので、一晩おうちでケアして翌日かかりつけへ、で大丈夫。様子が変わったら格上げを。'},
+      {q:'解熱剤の正しい考え方は？', c:['熱が出たら即使って下げきる','つらそうな時に楽にするために使う','使うとかえって悪化するので絶対使わない'], a:1, k:'解熱剤は「つらさのレスキュー」。上手に使えば眠れて水分もとれて、回復の助けになります。'}]},
+  { id:'toppatsun', t:'トッパツン参上!突発性発疹', e:'🌸',
+    m:{n:'トッパツン', real:'突発性発疹', age:'6ヶ月〜1歳代', av:'🌸', col:'#FFE3EA',
+       waza:'3日間の高熱のあと、熱が下がると同時に発疹を出すどんでん返し「あとからブツブツの術」', weak:'人生はじめての高熱の定番。発疹が出たら回復のサイン!'},
+    lesson:[
+      {h:'はじめての高熱の「定番」', b:'生後6ヶ月〜1歳代に多い、ヘルペスウイルス6型・7型による病気。\n\n・突然の高熱(39〜40℃)が3〜4日\n・熱のわりに比較的元気なことが多い\n・熱が下がると同時に、おなかや背中にバラ色の発疹\n・発疹はかゆみほぼなし、数日で消える\n\n熱が下がってから不機嫌MAXになるのも有名で「不機嫌病」の異名も。発疹が出たら「ゴールが見えた」サインです。\n\n注意:高熱期は熱性けいれんを起こすことがあるので、次のクエストもセットで!'}],
+    quiz:[
+      {q:'突発性発疹の発疹が出るタイミングは？', c:['熱が出ると同時','熱が下がったあと','熱が出る前の日'], a:1, k:'「解熱と同時に発疹」がトッパツンの必殺パターン。発疹=回復に向かうサインです。'},
+      {q:'【ケース】10ヶ月。3日続いた高熱が下がり、おなかに赤い発疹。機嫌は悪いが水分はとれる。', a:0, k:'典型的な突発性発疹の経過。おうちケアでOK(心配なら日中に確認受診でも◎)。不機嫌期はだっこ多めで乗り切って!'}]},
+  { id:'bikubikun', t:'熱性けいれん対応5か条', e:'⚡',
+    m:{n:'ビクビクン', real:'熱性けいれん', age:'6ヶ月〜5歳', av:'⚡', col:'#FFF3C2',
+       waza:'熱の上がりはなに突然体をガクガクさせて、家族の心臓を止めにくる「ビクビクの術」', weak:'多くは5分以内に止まり、後遺症なし。横向き・時間・動画の3点セット!'},
+    lesson:[
+      {h:'こわいけど、多くはだいじょうぶ', b:'熱性けいれんは、子どもの20〜30人に1人が経験するもの。熱がグンと上がる時に起きやすく、多くは5分以内に自然に止まり、後遺症も残りません。\n\n【対応5か条】\n①あわてず平らな所に寝かせる\n②顔と体を横向きに(吐いた物がのどに詰まらないように)\n③口にタオルや指を入れない・押さえつけない\n④時間を計る+できれば動画を撮る(診察の超重要情報!)\n⑤5分以上続く/初めて/止まってもすぐ繰り返す/様子がおかしい→119'},
+      {h:'やりがちNGと、そのあと', b:'NG:舌を噛まないようにと口に物を入れる(窒息のもと)/激しくゆする/抱きしめて押さえる\n\nけいれんが止まったら:\n・初めての時は、止まっても一度受診して原因を確認\n・「けいれん+発熱」では髄膜炎などが隠れていないかを医師がチェックします\n・繰り返すタイプの子には予防薬(ダイアップ)を相談できることも'}],
+    quiz:[
+      {q:'けいれん中、まずやることは？', c:['口にタオルを入れる','体を横向きにして時間を計る・動画を撮る','強くゆすって起こす'], a:1, k:'横向き+時間+動画が三種の神器。口に物を入れるのは窒息のもとでNGです。'},
+      {q:'【ケース】2歳。発熱中にけいれんが始まって、もう6分続いている。', a:2, k:'5分以上続くけいれんはためらわず119。救急隊に「何分続いているか」を伝えられると、とても助かります。'}]}
+]},
+{ id:'konkon', name:'コンコン洞窟', age:'0歳〜6歳', emoji:'🦇', col:'#E3E8FF',
+  quests:[
+  { id:'zeezeen', t:'RSウイルスと細気管支炎', e:'🫁',
+    m:{n:'ゼーゼーン', real:'RSウイルス感染症・細気管支炎', age:'0〜2歳(小さいほど重い)', av:'🌬️', col:'#D7E6FF',
+       waza:'細い気管支をふさいで「ゼーゼー」させる。小さい子ほど本気を出すずるい奴', weak:'鼻水吸い+こまめな水分。陥没呼吸・無呼吸・飲めないは🔴!'},
+    lesson:[
+      {h:'ただの鼻かぜ→2,3日後が本番', b:'RSウイルスは2歳までにほぼ全員がかかる、ありふれたウイルス。大人には鼻かぜでも、赤ちゃんでは細い気管支で炎症を起こし「細気管支炎」になることが。\n\n経過の型:鼻水ジュルジュル→2〜3日後に咳ゼーゼーのピーク\n\nホームケア:\n・鼻水吸い器でこまめに吸う(寝る前・飲む前が効果的)\n・水分を少量ずつこまめに\n・頭側を少し高くして寝かせる'},
+      {h:'🔴受診サイン', b:'・肋骨の間やみぞおちがペコペコへこむ(陥没呼吸)\n・小鼻がヒクヒク、肩で息をする\n・ミルク・水分がいつもの半分以下\n・3ヶ月未満で咳→呼吸が止まりそうになる(無呼吸)\n・顔色やくちびるの色が悪い\n\n月齢が小さいほど急に悪くなりやすいので、「夜中でも迷ったら#8000」。妊娠中のRSワクチンや赤ちゃんへの予防注射が使えるようになってきたので、産院・小児科で聞いてみて。'}],
+    quiz:[
+      {q:'【ケース】4ヶ月。鼻水3日目から咳がひどくなり、ミゾオチがペコペコへこんでミルクが半分しか飲めない。', a:2, k:'陥没呼吸+哺乳低下は細気管支炎の重症サイン。夜中でもすぐ受診です。'},
+      {q:'RSのホームケアでいちばん大事なのは？', c:['咳止めでぴたっと止める','鼻水吸い+こまめな水分','厚着でたっぷり汗をかかせる'], a:1, k:'特効薬はなく、鼻水を吸って呼吸と哺乳を楽にしてあげるのが最強のケアです。'}]},
+  { id:'kenkeen', t:'夜のケンケン咳・クループ', e:'🦭',
+    m:{n:'ケンケーン', real:'クループ症候群(喉頭炎)', age:'6ヶ月〜3歳', av:'🦭', col:'#FFE9D6',
+       waza:'夜中にオットセイみたいな「ケンケン!」という咳と、かすれ声をプレゼントしてくる', weak:'冷たい空気・加湿で楽に。息を吸う時のヒューヒュー+陥没は🔴。'},
+    lesson:[
+      {h:'オットセイの咳が聞こえたら', b:'のどの奥(声帯のあたり)がウイルスで腫れる病気。特徴は夜に悪化する\n\n・オットセイ/犬の遠吠えのような「ケンケン」咳\n・かすれ声\n・息を吸う時にヒューと音がする\n\n楽にするコツ:\n・たて抱きで落ち着かせる(泣くと悪化)\n・夜の冷たい外気やベランダの空気を吸わせる、加湿する\n・水分を少しずつ\n\n🔴サイン:吸う時のヒューヒューが安静時も続く/陥没呼吸/よだれを飲み込めない/ぐったり→夜間でも受診。病院ではのどの腫れをとる吸入や飲み薬があります。'}],
+    quiz:[
+      {q:'クループの咳の特徴は？', c:['コンコンと乾いた小さな咳','ケンケン!とオットセイのような咳+かすれ声','ゴホゴホと痰がらみの咳'], a:1, k:'「ケンケン咳」を聞いたらクループ。スマホで咳の音を録音して受診時に聞かせると診断がスムーズ!'},
+      {q:'【ケース】1歳半。夜中にケンケン咳。抱っこで落ち着くと咳は減り、呼吸の音も静か。', a:1, k:'落ち着いて呼吸が楽ならひとまず🟡。加湿して様子を見て、日中に受診を。安静でもヒューヒュー+陥没呼吸なら🔴に格上げです。'}]},
+  { id:'hyuhyun', t:'ぜんそくと長引く咳', e:'🌪️',
+    m:{n:'ヒューヒュン', real:'気管支喘息 / マイコプラズマ・百日咳・副鼻腔炎', age:'1歳〜学童', av:'🌀', col:'#E2F6E9',
+       waza:'夜明けと運動のあとに「ヒューヒュー、ゼーゼー」を繰り返させるしつこい技', weak:'「繰り返すゼーゼー」は喘息かも。発作止めと予防の薬で必ずコントロールできる!'},
+    lesson:[
+      {h:'喘息かも?のサイン', b:'・かぜのたびにゼーゼー、ヒューヒューを繰り返す\n・明け方や運動後、笑った後に咳き込む\n・家族にアレルギー体質\n\n喘息は「発作を止める薬」と「発作を起こさせない予防の薬」の2本立てでコントロールできる病気。ゼーゼーを3回以上繰り返したら、一度しっかり相談を。\n\n🔴発作のレッドサイン:話せない・歩けない/肩で息・陥没呼吸/くちびるが紫/横になれない→夜間でも受診!'},
+      {h:'2週間以上つづく咳', b:'長引く咳には別の犯人がいることも。\n\n・マイコプラズマ…学童に多い、熱が下がっても乾いた咳がしつこい\n・百日咳…コンコンコン+ヒューと息を吸う発作的な咳。赤ちゃんは無呼吸が危険(ワクチンで予防!)\n・副鼻腔炎…ドロッとした鼻水+痰がらみの咳、寝入りに悪化\n\n「咳が2週間以上」「どんどん悪化」は、ただのかぜ卒業のサイン。受診して原因さがしを。'}],
+    quiz:[
+      {q:'喘息を疑うサインは？', c:['一度だけ咳が出た','かぜのたびにゼーゼーを繰り返す','くしゃみが多い'], a:1, k:'キーワードは「繰り返すゼーゼー」。予防の治療で運動も普通にできるようになります。'},
+      {q:'【ケース】3歳。喘息もち。今夜はゼーゼーがひどく、苦しくて横になれず、話すのも途切れ途切れ。', a:2, k:'話せない・横になれないは大発作のサイン。手持ちの発作止めを使いつつ、夜間でもすぐ受診です。'}]},
+  { id:'mimiitan', t:'耳いたいよ〜中耳炎', e:'👂',
+    m:{n:'ミミイタン', real:'急性中耳炎', age:'6ヶ月〜3歳に多い', av:'👂', col:'#FFE3EA',
+       waza:'かぜのあと、鼓膜の奥にうみをためて夜中に泣かせる「みみズキズキの術」', weak:'痛み止めで一晩しのげる。耳だれ・ぐずりが続けば耳鼻科/小児科へ。'},
+    lesson:[
+      {h:'かぜのあとの夜泣き・耳さわり', b:'子どもの耳と鼻をつなぐ管(耳管)は短くて水平なので、かぜの菌が耳に入りやすい構造。3歳までに7割の子が一度は経験します。\n\nサイン:\n・かぜのあと、夜中に急に泣く/不機嫌\n・しきりに耳を触る・こする\n・耳から汁(耳だれ)、発熱\n\n対応:\n・夜中なら、処方されている解熱鎮痛剤で痛みを取って朝まででOK(痛み止めは中耳炎の痛みにも効きます)\n・翌日、耳鼻科か小児科へ。軽ければ抗菌薬なしで治ることも多く、先生が鼓膜を見て判断します\n・飛行機や鼻すすりで悪化することも。鼻水はこまめに吸って予防!'}],
+    quiz:[
+      {q:'【ケース】1歳半。鼻かぜ4日目の夜中、急に泣いて右耳をしきりに触る。38℃。水分はとれる。', a:1, k:'中耳炎が濃厚。夜は痛み止めでしのぎ、翌日の診療時間に受診でOK。ぐったり・首が腫れる等あれば格上げを。'},
+      {q:'中耳炎の予防に役立つのは？', c:['耳そうじを毎日する','鼻水をこまめに吸う','耳に水を入れない'], a:1, k:'中耳炎は「鼻」から始まります。鼻水吸い器が最強の予防アイテム。お風呂の水はほぼ無関係です。'}]}
+]},
+{ id:'onaka', name:'おなかの迷路', age:'0歳〜6歳', emoji:'🌀', col:'#FFF3D6',
+  quests:[
+  { id:'geriipii', t:'胃腸炎と脱水バリア', e:'🤢',
+    m:{n:'ゲーリーピー', real:'感染性胃腸炎(ロタ・ノロウイルスなど)', age:'すべての年齢', av:'🤢', col:'#E2F6E9',
+       waza:'嘔吐と下痢のダブルアタックで体の水分を奪う「だっすいコンボ」', weak:'吐いた後は30分休んでから、経口補水液をスプーン1杯ずつ。ロタはワクチンで弱体化!'},
+    lesson:[
+      {h:'勝負は「脱水させない」こと', b:'ウイルス性胃腸炎に特効薬はなく、勝負は脱水との戦い。\n\n【飲ませ方の極意】\n①吐いた直後は30分〜1時間、何も飲ませず胃を休める\n②経口補水液(ORS)をスプーン1杯(5ml)から\n③5〜10分おきに少しずつ増量\n④一気飲みさせない(また吐きます)\n\n食事は欲しがれば、おかゆ・うどんなど消化のよい物から。下痢止めは基本使いません(ウイルスを外に出すのも仕事)。'},
+      {h:'🔴脱水と受診のサイン', b:'・おしっこが半日以上出ない\n・泣いても涙が出ない、口の中がカラカラ\n・ぐったり、うとうと\n・嘔吐が止まらず一滴も飲めない\n・血便、強い腹痛、緑色の嘔吐\n\n→このどれかがあれば受診(夜間なら#8000に相談を)。\n\n家族へのうつし防止:処理は手袋+ビニール袋、塩素系で消毒、手洗い徹底。ロタウイルスはワクチン(生後2ヶ月〜)で重症化を防げます!'}],
+    quiz:[
+      {q:'嘔吐したあとの正しい水分のあげ方は？', c:['すぐコップ1杯ごくごく','30分休んでからスプーン1杯ずつ','翌朝まで何もあげない'], a:1, k:'「休ませてから、ちょっとずつ」が鉄則。スプーン1杯×何回も、で胃を驚かせず水分を入れます。'},
+      {q:'【ケース】1歳。嘔吐下痢2日目。今日はおしっこが朝から一度も出ず、泣いても涙が出ない。', a:2, k:'おしっこが出ない+涙が出ないは脱水のレッドサイン。点滴が必要なことがあるので、すぐ受診です。'}]},
+  { id:'jamjamun', t:'時間勝負!腸重積', e:'🍓',
+    m:{n:'ジャムジャムン', real:'腸重積症', age:'4ヶ月〜2歳', av:'🍓', col:'#FFE3EA',
+       waza:'腸を腸の中にもぐりこませ、「泣く⇄けろっ」を繰り返させる。最後はいちごジャムのような血便を出す', weak:'発症から早ければ、おしりから空気を入れる処置で手術なしで治せる。時間勝負!'},
+    lesson:[
+      {h:'「泣く⇄けろっ」の繰り返しに注目', b:'腸が腸の中にもぐり込んでしまう病気。4ヶ月〜2歳に多く、特徴は:\n\n・火がついたように泣く→数分でけろっと静かに→また激しく泣く…を15〜30分おきに繰り返す(間欠的啼泣)\n・嘔吐\n・進行すると「いちごジャムのような血便」\n・顔色が悪い、ぐったり\n\n早く見つかれば、おしりから空気や造影剤を入れて戻す処置(高圧浣腸)で手術なしで治ることが多い、まさに時間勝負の病気。「泣き方がいつもと違う、波がある」と感じたら、血便を待たずに受診を!'}],
+    quiz:[
+      {q:'腸重積を疑う泣き方は？', c:['ずっと同じ調子でぐずぐず','激しく泣く⇄けろっと静か、を繰り返す','抱っこすると泣き止む'], a:1, k:'「波のある激しい泣き」が最大のヒント。おなかの痛みの波と一致しています。'},
+      {q:'【ケース】8ヶ月。2時間前から激しく泣いてはおさまるのを繰り返し、2回嘔吐。おむつにいちごジャム状の血便。', a:2, k:'典型的な腸重積。夜中でもすぐ受診/119。早いほど手術なしで治せる確率が上がります。'}]},
+  { id:'kachikoron', t:'カチコチ便秘ループ', e:'🪨',
+    m:{n:'カチコロン', real:'便秘症', age:'離乳食期〜学童', av:'🪨', col:'#EFE6D8',
+       waza:'うんちを固くして「出すと痛い→がまん→もっと固く」の無限ループを作る', weak:'浣腸はクセにならない!ループを断ち切って、毎日スルッと習慣へ。'},
+    lesson:[
+      {h:'便秘は「ループを切る」が勝ち', b:'子どもの便秘は「固い→痛い→がまん→もっと固い」の悪循環。長引くと腸が広がって感じにくくなるので、early対応が吉。\n\n・浣腸や処方の薬(モビコールなど)はクセになりません。むしろ早く使ってループを切るが正解\n・水分、野菜・果物・ヨーグルト、朝ごはんのあとトイレタイム\n・トイレは足が床や台につく姿勢で(踏んばれる!)\n\n🟡受診目安:週2回以下が1ヶ月続く/出すたび痛がる・切れて血がつく/おもらし(便がもれる)…は小児科で治療を。\n🔴嘔吐+おなかパンパン+強い痛みは腸閉塞などのサイン、すぐ受診。'}],
+    quiz:[
+      {q:'子どもの便秘で正しいのは？', c:['浣腸はクセになるので極力がまん','浣腸や薬で早めに悪循環を断ち切る','水分を減らすと改善する'], a:1, k:'浣腸も飲み薬もクセになりません。「痛くないうんち」の成功体験を積むのが治療です。'},
+      {q:'【ケース】3歳。5日出ておらず、今日は嘔吐しておなかがパンパン。痛がって泣く。', a:2, k:'便秘でも「嘔吐+張り+強い痛み」は腸閉塞などを疑う組み合わせ。すぐ受診してください。'}]},
+  { id:'mouchon', t:'右下のいたみ・虫垂炎', e:'📍',
+    m:{n:'モウチョン', real:'急性虫垂炎(もうちょう)', age:'4歳〜(学童に多い)', av:'📍', col:'#FFE9D6',
+       waza:'みぞおちの痛みをじわじわ右下に移動させる「おひっこしの術」。歩くとおなかに響かせる', weak:'「右下・響く・押して離すと痛い」の3点セットで見破れる!'},
+    lesson:[
+      {h:'痛みが「お引っ越し」する', b:'虫垂炎のサインは時間とともに変わります。\n\n①最初:みぞおち〜おへそまわりが痛い、食欲ダウン、微熱\n②半日〜1日後:痛みが右下のおなかへお引っ越し\n③歩く・ジャンプ・咳で響く、押して離した瞬間に痛い\n\n小さい子は「うまく言えない」ので、\n・歩き方が前かがみ、そろそろ歩き\n・ジャンプさせると痛がる\n・触ると右下を守る\nが見破りポイント。胃腸炎と違い、下痢は目立たないことが多いのもヒント。疑ったら絶食気味にして🟡早めに受診(夜なら様子次第で🔴)。こじれて破れる前に見つけるのが勝負!'}],
+    quiz:[
+      {q:'虫垂炎らしさが高いのは？', c:['痛みがみぞおち→右下に移動し、歩くと響く','下痢が一日中続く','食欲が普段よりある'], a:0, k:'「移動する痛み+響く痛み」が虫垂炎のサイン。ジャンプテストは家でもできる簡易チェックです。'},
+      {q:'【ケース】5歳。昨日からおへそまわりが痛み、今日は右下を痛がって前かがみ歩き。微熱、食欲なし。', a:2, k:'典型的な虫垂炎の経過。こじれる前の診断が大事なので、今すぐ(夜間でも)受診しましょう。'}]},
+  { id:'gokkunma', t:'ゴックンしちゃった!誤飲', e:'😱',
+    m:{n:'ゴックンマ', real:'誤飲(ボタン電池・磁石・タバコ・薬など)', age:'6ヶ月〜3歳がピーク', av:'🧲', col:'#E3E8FF',
+       waza:'床に落ちた小物を一瞬でゴックンさせる早業。ボタン電池と磁石2個が最凶コンボ', weak:'直径4cm以下は手の届かない所へ。「何を・いつ・いくつ」をメモして相談!'},
+    lesson:[
+      {h:'最凶コンボを覚えよう', b:'【今すぐ受診/119レベル】\n・ボタン電池…数時間で食道に穴が!飲んだ疑いだけでもレントゲンへ\n・磁石2個以上…腸をはさんで穴をあける\n・タバコ・電子タバコの液\n・薬(大人の薬・サプリ)、洗剤・漂白剤、ボタン型乾電池\n\n【あわてなくてよいことが多い】\n・小さなプラ片、紙、クレヨン少量→多くはうんちと一緒に出てきます\n\n鉄則:無理に吐かせない(物によっては悪化)。「何を・いつ・どれくらい」+現物やパッケージを持って相談を。\n\n📞中毒110番:大阪072-727-2499(24時間)/つくば029-852-9999(9〜21時)'}],
+    quiz:[
+      {q:'もっとも急いで受診すべき誤飲は？', c:['クレヨンをかじった','ボタン電池を飲んだかも','ティッシュを少し食べた'], a:1, k:'ボタン電池は数時間で食道をやけどさせる最凶アイテム。「かも」の段階でレントゲンを撮りに行きます。'},
+      {q:'誤飲したときの正しい対応は？', c:['まず指を入れて吐かせる','無理に吐かせず、現物を持って受診・相談','水をたくさん飲ませて流す'], a:1, k:'吐かせると悪化する物(灯油・洗剤など)があります。現物・パッケージ持参が診断の近道。'}]}
+]},
+{ id:'butsubutsu', name:'ブツブツ草原', age:'0歳〜6歳', emoji:'🌾', col:'#E2F6E9',
+  quests:[
+  { id:'potsupotsun', t:'夏のお口いたいた・手足口病', e:'☀️',
+    m:{n:'ポツポツン', real:'手足口病・ヘルパンギーナ', age:'0〜5歳(夏に流行)', av:'🖐️', col:'#FFF3C2',
+       waza:'手のひら・足のうら・口の中にポツポツを出し、のどを痛くしてごはんを拒否させる', weak:'しみない物(プリン・冷たいうどん)で水分キープ。数日で自然に勝てる!'},
+    lesson:[
+      {h:'夏かぜ2大スター', b:'どちらも夏に流行するウイルスの病気。\n\n・手足口病…手のひら・足のうら・口の中・おしりにポツポツ。熱は軽め〜中等度\n・ヘルパンギーナ…高熱+のどの奥に水ぶくれ\n\n共通の敵は「口が痛くて飲めない」こと。\n\n【ごはん作戦】しみない物が正義!\nプリン、ゼリー、冷ましたうどん、冷たい豆腐、アイス。オレンジジュースなど酸っぱい物・熱い物はしみるのでNG。\n\n🔴サイン:水分がとれずおしっこ激減/高熱が続きぐったり/うとうとして視線が合わない(まれに髄膜炎・脳炎)→受診。\n登園は熱が下がって食べられればOKが基本(園のルールも確認)。'}],
+    quiz:[
+      {q:'手足口病の子のごはんで正解は？', c:['熱々のスープ','オレンジジュース','プリンや冷たいうどん'], a:2, k:'「冷たい・やわらかい・しみない」が3原則。食事より水分優先でOKです。'},
+      {q:'【ケース】2歳。手足口病3日目。口が痛くて今日はほぼ飲めず、半日おしっこなし。ぐったり。', a:2, k:'飲めない+おしっこ激減は脱水サイン。点滴で楽になることが多いので、すぐ受診を。'}]},
+  { id:'mizubukun', t:'水ぼうそうとワクチンの盾', e:'💧',
+    m:{n:'ミズブクン', real:'水痘(みずぼうそう)', age:'ワクチン前の世代に多かった', av:'💧', col:'#D7F2FF',
+       waza:'かゆい水ぶくれを「赤いポツ→水ぶくれ→かさぶた」と次々に出す波状攻撃', weak:'ワクチン2回でほぼ封印済み!全部かさぶたになるまで登園はおやすみ。'},
+    lesson:[
+      {h:'水ぶくれの波状攻撃', b:'水痘ウイルスによる病気。特徴は、赤いポツ→水ぶくれ→かさぶたが体のあちこちに混在して次々出ること。かゆみが強く、頭の中や口の中にも出ます。\n\n・定期接種(1歳と1歳半の2回)のおかげで激減!\n・かかったら:48時間以内なら抗ウイルス薬で軽くできることも。かゆみ止めで掻き壊し防止\n・うつる力がとても強い:すべて かさぶたになるまで登園・登校はお休み(法律ルール)\n・きょうだいへの予防に、接触後すぐのワクチンが効くこともあるので小児科に相談を\n\n⚠️解熱剤はアセトアミノフェン以外NGの病気(アスピリン等は重い合併症のもと)。必ず処方されたものを。'}],
+    quiz:[
+      {q:'水ぼうそうの登園再開はいつ？', c:['熱が下がったらすぐ','発疹がすべてかさぶたになってから','発疹が出て3日たてばOK'], a:1, k:'すべてかさぶた化が再開ライン。うつす力が強いので、ここはしっかり守りましょう。'},
+      {q:'水ぼうそうを防ぐ最強の盾は？', c:['手洗いだけで十分','水痘ワクチン2回接種','一度かかわせておく'], a:1, k:'1歳と1歳半の定期接種2回でほぼ防げます。1歳のお誕生日に忘れずに!'}]},
+  { id:'ichigoberon', t:'いちご舌の溶連菌', e:'🍓',
+    m:{n:'イチゴベロン', real:'溶連菌感染症', age:'3歳〜学童', av:'👅', col:'#FFE3EA',
+       waza:'のどを真っ赤にして舌をいちごに変える。倒したフリをして腎炎で復活を狙うしぶとさ', weak:'のどの迅速検査ですぐバレる。抗菌薬を最後まで飲み切れば完封!'},
+    lesson:[
+      {h:'のど痛+熱+ブツブツ', b:'溶連菌は細菌(ばい菌)による、のどの感染症。3歳以上に多く:\n\n・強いのどの痛み+発熱(咳・鼻水は少なめ)\n・舌が赤いブツブツの「いちご舌」に\n・体に細かい発疹が出ることも\n\n病院では、のどを綿棒でこする迅速検査で5〜10分で判明。\n\n【ここが最重要】抗菌薬は元気になっても最後まで飲み切る!途中でやめると、数週間後に急性糸球体腎炎やリウマチ熱で「復活」を狙ってきます。飲み切って完封しましょう。家族にのど痛が出たら同じ検査を。抗菌薬開始から24時間たてば登園OKが目安。'}],
+    quiz:[
+      {q:'溶連菌の抗菌薬、正しい飲み方は？', c:['熱が下がったらやめてよい','処方された日数を最後まで飲み切る','症状が強い日だけ飲む'], a:1, k:'飲み切りが腎炎・リウマチ熱の予防そのもの。元気になってからが本当の勝負です。'},
+      {q:'溶連菌らしい組み合わせは？', c:['のど痛+発熱+いちご舌','鼻水+くしゃみ+目のかゆみ','下痢+嘔吐'], a:0, k:'咳鼻水が「少ない」のに、のどが真っ赤で痛いのがポイント。迅速検査ですぐわかります。'}]},
+  { id:'kawasaking', t:'ボス戦!カワサキング', e:'👑',
+    m:{n:'カワサキング', real:'川崎病', age:'4歳以下(1歳前後がピーク)', av:'🦁', col:'#FFD9CF',
+       waza:'5日以上の高熱+5つのサインで全身の血管を攻撃。放っておくと心臓の血管(冠動脈)を狙う', weak:'「高熱が4〜5日続いたら必ず受診」で早期発見→入院治療(免疫グロブリン)でほぼ撃退できる!'},
+    lesson:[
+      {h:'5つのサインを覚えよう', b:'川崎病は全身の血管に炎症が起きる病気。原因はまだ謎ですが、日本の子どもに多く、4歳以下が8割。\n\n【高熱(5日以上)+この中の複数】\n①両目が赤い(目やにナシの充血)\n②くちびるが真っ赤・いちご舌\n③体の発疹(BCGの跡が赤く腫れるのも有名)\n④手足がパンパンに腫れる・赤い\n⑤首のリンパ節が腫れる\n\nぜんぶ揃わなくても川崎病のことがあります(不全型)。'},
+      {h:'なぜ早期発見が大事？', b:'こわいのは、心臓に栄養を送る冠動脈にコブ(瘤)ができる合併症。\n\nでも、発症から早く(目安10日以内)に入院して免疫グロブリン点滴+アスピリンの治療をすれば、コブはかなり防げます。\n\nだから合言葉はこれ:\n「高熱が4〜5日続いたら、かぜと思っても必ずもう一度受診」\n\n目の赤さ・唇・発疹・手足・首…気づいたサインの写真を撮っておくと診断の大きな助けになります。'}],
+    quiz:[
+      {q:'川崎病を疑う組み合わせは？', c:['半日の微熱+鼻水','5日続く高熱+目の充血+真っ赤な唇+発疹','咳だけが2日'], a:1, k:'「長引く高熱+赤のサインたち」がカワサキングの正体。サインの写真が強力な武器になります。'},
+      {q:'【ケース】1歳半。高熱5日目。両目が赤く、唇がカサカサで真っ赤、体に発疹、BCG跡も赤い。', a:2, k:'川崎病が強く疑われます。心臓の合併症を防ぐ治療は早いほど有利。今すぐ受診です。'}]}
+]},
+{ id:'oshikko', name:'おしっこ川', age:'2歳〜6歳に多い', emoji:'🏞️', col:'#D7F2FF',
+  quests:[
+  { id:'cooran', t:'コーラ色のおしっこ？腎炎', e:'🥤',
+    m:{n:'コーラン', real:'急性糸球体腎炎・IgA腎症', age:'3歳〜学童', av:'🥤', col:'#EFE6D8',
+       waza:'おしっこをコーラ色に変え、顔をむくませる。溶連菌の2〜3週間後に現れがち', weak:'見た目のヘンなおしっこは捨てずに持参!多くは安静と治療で回復する。'},
+    lesson:[
+      {h:'おしっこは腎臓からのお手紙', b:'・コーラ色・紅茶色のおしっこ(血尿)\n・まぶたや顔のむくみ\n・おしっこの量が減る、血圧が上がる\n\nこの組み合わせは急性糸球体腎炎のサイン。溶連菌感染の2〜3週間後に起こることが有名です(だから抗菌薬の飲み切りが大事!)。多くは安静と塩分・水分の管理で回復します。\n\nIgA腎症は学校検尿で「血尿・蛋白尿」から見つかることが多い慢性の腎炎。3歳児検診や学校の尿検査をサボらないことが、未来の腎臓を守ります。\n\n💡受診のコツ:ヘンな色のおしっこは捨てずに容器で持参 or 写真!'}],
+    quiz:[
+      {q:'【ケース】5歳。2週間前に溶連菌。今朝からおしっこがコーラ色で、まぶたがむくんでいる。', a:1, k:'急性糸球体腎炎を疑う典型パターン。今日〜明日中に必ず受診を(おしっこ持参!)。尿が極端に減る・頭痛・嘔吐・けいれんは🔴です。'},
+      {q:'腎臓の病気を早く見つける身近なチャンスは？', c:['3歳児検診や学校の尿検査','視力検査','身長測定'], a:0, k:'尿検査は腎臓からの手紙を読む検診。提出を忘れずに!'}]},
+  { id:'mukumukun', t:'むくみと泡おしっこ・ネフローゼ', e:'🫧',
+    m:{n:'ムクムクン', real:'ネフローゼ症候群', age:'2〜6歳に多い', av:'🫧', col:'#E3E8FF',
+       waza:'おしっこにタンパクを捨てさせて、まぶた・足・おなかをむくませる', weak:'ステロイド治療がよく効く。再発と長く付き合う病気だけど、ちゃんと大きくなれる!'},
+    lesson:[
+      {h:'「太った?」いいえ、むくみかも', b:'腎臓のフィルターから蛋白がもれ出てしまう病気。2〜6歳の男の子にやや多め。\n\nサイン:\n・朝、まぶたがぷっくり→だんだん足やおなかも\n・おしっこが少なく、泡立ちがなかなか消えない\n・数日で体重が急に増える(=水分がたまっている)\n\n「急に太った?」は実はむくみのことが。指でスネを押してへこみが残るかチェック。\n\n治療はステロイドがよく効きます。再発しやすい病気ですが、多くは成長とともに落ち着き、ふつうに大きくなれます。むくみ+泡尿に気づいたら🟡早めに受診を。'}],
+    quiz:[
+      {q:'ネフローゼを疑うサインは？', c:['まぶた・足のむくみ+泡立つおしっこ','食欲が増えた','よく眠る'], a:0, k:'「むくみ+消えない泡」のセットが合図。体重の急増もヒントです。'},
+      {q:'【ケース】4歳。3日前からまぶたがむくみ、今日は靴下の跡がくっきり。体重が1週間で1kg増。', a:1, k:'ネフローゼを疑うので今日〜明日中に受診を。呼吸が苦しい・おなかがパンパン・おしっこがほぼ出ないなら🔴へ格上げ。'}]},
+  { id:'azamushin', t:'足のあざ+腹痛・IgA血管炎', e:'🟣',
+    m:{n:'アザムシン', real:'IgA血管炎(アレルギー性紫斑病)', age:'3〜10歳', av:'🟣', col:'#F3E8FF',
+       waza:'足とおしりに「押しても消えない」紫の点々を出し、腹痛・関節痛も仕掛ける', weak:'紫斑は押して消えるかチェック!多くは自然に治るが、腎炎の見張りが大事。'},
+    lesson:[
+      {h:'押しても消えないブツブツ', b:'細い血管に炎症が起きる病気。かぜの後などに:\n\n・足〜おしりに左右対称の紫〜赤の点々(紫斑)\n・コップの底などで押しても色が消えない(ふつうの発疹は白くなる)\n・足首・ひざの痛みで歩きたがらない\n・強い腹痛、ときに血便\n\n多くは数週間で自然に治りますが、①強い腹痛(腸重積を合併することも)②あとから腎炎が出ないか、の2つを見張るため、必ず受診して定期的に尿検査を。\n\n⚠️「紫斑+発熱+ぐったり」は別の重い病気(髄膜炎菌など)の可能性もあるので、その場合は🔴一直線です。'}],
+    quiz:[
+      {q:'紫斑(しはん)の見分けかたは？', c:['押すと白く消える','押しても色が消えない','温めると消える'], a:1, k:'透明なコップで押してみるのが家庭の知恵。消えない点々=血管からの出血サインです。'},
+      {q:'【ケース】6歳。両足に押しても消えない紫の点々と足首の痛み。熱はなく元気はある。', a:1, k:'IgA血管炎を疑い、今日〜明日に受診を。強い腹痛・血便・発熱+ぐったりが加われば🔴です。'}]},
+  { id:'shikkorin', t:'おしっこが多い!2つの顔', e:'🚻',
+    m:{n:'シッコリン', real:'神経性頻尿 / 1型糖尿病', age:'3歳〜学童', av:'🚻', col:'#FFF3C2',
+       waza:'「ちょこちょこトイレ」と「がぶ飲み多尿」、2つの姿に化ける変身モンスター', weak:'夜の様子と水の飲み方で正体を見破れ!がぶ飲み+体重減はすぐ受診。'},
+    lesson:[
+      {h:'同じ「頻尿」でも大ちがい', b:'【神経性頻尿(心配いらないタイプ)】\n・昼間だけ10〜30分おきにトイレ\n・夜は朝までぐっすり、おねしょ増えない\n・水を飲む量は普通、量は毎回ちょっぴり\n・発表会前など緊張する時期に多い\n→責めずに見守り+水分制限しない。自然に治ります\n\n【1型糖尿病(急ぐタイプ)】\n・のどが渇いて水をがぶがぶ飲む\n・おしっこの「量」が多い、夜も起きる/おねしょ復活\n・体重が減る、だるい、疲れやすい\n→進むと命に関わるケトアシドーシスに。「多飲・多尿・体重減」が揃ったら、その日のうちに受診して尿検査を!\n\n1型糖尿病は生活習慣のせいではありません。早く見つければ、インスリンで元気に学校生活が送れます。'}],
+    quiz:[
+      {q:'急いで受診したい「おしっこが多い」は？', c:['昼だけちょこちょこトイレ、夜はぐっすり','水をがぶ飲み+夜も多尿+体重が減ってきた','遠足の前日だけ頻尿'], a:1, k:'多飲+多尿+体重減は1型糖尿病のサイン。尿検査ですぐ手がかりが得られます。'},
+      {q:'神経性頻尿の子への正しい対応は？', c:['水分を制限する','「またトイレ?」と注意する','責めずに見守る(自然に治る)'], a:2, k:'プレッシャーが一番の悪化要因。気にしないそぶりが一番の薬です。'}]}
+]},
+{ id:'kokoro', name:'こころとからだの丘', age:'3歳〜6歳', emoji:'🌄', col:'#F3E8FF',
+  quests:[
+  { id:'zukinzukin', t:'子どもの頭痛とレッドサイン', e:'🤕',
+    m:{n:'ズキンズキン', real:'片頭痛・緊張型頭痛', age:'幼児〜学童', av:'🤕', col:'#E3E8FF',
+       waza:'おでこやこめかみをズキズキさせ、ひどい時は吐かせる。寝ると不思議と消える', weak:'暗い部屋でひと眠りが特効薬。「朝の頭痛+嘔吐が続く」だけは別モンスターなので注意!'},
+    lesson:[
+      {h:'子どもにも片頭痛はある', b:'子どもの片頭痛は大人と少し違い:\n・短め(1〜2時間で治ることも)\n・おでこや両側が痛むことが多い\n・吐き気・嘔吐をともない、寝るとケロッと治る\n\n対処:暗く静かな部屋で寝かせる/処方の痛み止めは「痛くなり始め」に使うのがコツ/寝不足・空腹・画面の見すぎが引き金になりがち。\n\n【🔴別モンスターのサイン】\n・早朝〜朝方の頭痛+嘔吐が何日も続く\n・だんだん頻度・強さが増す\n・ふらつく、物が二重に見える、けいれん\n・頭を打った後の頭痛+嘔吐\n→脳の病気を確認するため、急いで受診を。'}],
+    quiz:[
+      {q:'急いで調べたい頭痛は？', c:['夕方にときどき、寝ると治る','朝方の頭痛+嘔吐が数日続き、悪化している','運動会の翌日だけ痛い'], a:1, k:'「朝+嘔吐+悪化」は頭の中の圧が上がっているサインの可能性。すみやかに受診です。'},
+      {q:'片頭痛の子のホームケアは？', c:['明るい部屋でテレビを見せる','暗く静かな部屋で寝かせる','走らせて気をまぎらわす'], a:1, k:'光と音を減らして眠るのが一番の薬。痛み止めは早めのタイミングが効きます。'}]},
+  { id:'kyurukyurun', t:'くりかえす腹痛と登園しぶり', e:'🎒',
+    m:{n:'キュルキュルン', real:'反復性腹痛・心理的ストレス', age:'3歳〜学童', av:'🎒', col:'#FFE3EA',
+       waza:'月曜の朝だけおなかを痛くさせる。休みの日は不思議と現れない', weak:'責めずに話を聞くと弱る。ただし「夜中も痛い・体重が減る」は体の病気サイン。'},
+    lesson:[
+      {h:'おなかは心の天気予報', b:'「朝になるとおなかが痛い、でも休みの日は元気」——これは仮病ではなく、緊張や不安が本当に腹痛を起こしている状態(脳と腸はつながっています)。\n\n対応のコツ:\n・「また?」と責めない。まず「痛いんだね」と受け止める\n・園や学校で何があるか、遊びながらぽつぽつ聞く\n・行けた日は大げさに褒めない(プレッシャーになる)、さらっと\n・園の先生と情報共有。休ませる/行かせるは白黒つけず柔軟に\n\n【体の病気を見逃さないチェック】\n夜中に痛みで起きる/体重が減る/血便/嘔吐をくり返す/おへそから遠い場所が痛い→これらがあれば検査が必要。まず一度は小児科でしっかり診てもらうと、親も子も安心して心のケアに進めます。'}],
+    quiz:[
+      {q:'登園前の腹痛、まずよい対応は？', c:['「仮病でしょ」と送り出す','「痛いんだね」と受け止めて様子を聞く','その場で園を退園する'], a:1, k:'受け止めてもらえた安心感が、いちばんの痛み止め。原因さがしはゆっくりで大丈夫。'},
+      {q:'「体の病気」を疑って検査したい腹痛は？', c:['平日朝だけの腹痛','夜中に痛みで起きる+体重が減ってきた','遠足の前日の腹痛'], a:1, k:'夜間痛と体重減少は機能性(ストレス性)では説明しにくいサイン。検査で確認を。'}]},
+  { id:'guuguun', t:'いびきと睡眠の番人', e:'😴',
+    m:{n:'グーグーン', real:'アデノイド肥大・睡眠時無呼吸症候群', age:'2〜6歳', av:'😴', col:'#D7E6FF',
+       waza:'大いびきの途中で呼吸を「…ッ!」と止めて、昼間の集中力とごきげんを奪う', weak:'寝ている動画を撮れば正体がバレる。手術や治療でぐっすり快眠に戻れる!'},
+    lesson:[
+      {h:'いびきは「かわいい」だけじゃない', b:'のどの奥のアデノイドや扁桃が大きいと、寝ている間の空気の通り道がふさがれます。\n\n気にしたいサイン:\n・毎晩の大きないびき\n・呼吸が数秒止まり、「カッ」と再開する\n・口をあけて寝る、寝相が苦しそう、汗びっしょり\n・昼間:機嫌が悪い、集中できない、お昼寝が長すぎる\n・身長・体重の伸びがゆっくりになる\n\n睡眠の質が落ちると、成長ホルモンや日中の発達にも影響が。\n\n【最強の受診準備】寝ているときのいびき・無呼吸を1〜2分動画に撮って耳鼻科へ。鼻炎の治療やアデノイド・扁桃の手術で、見ちがえるほどぐっすり眠れるようになる子がたくさんいます。'}],
+    quiz:[
+      {q:'受診を考えたいいびきは？', c:['かぜの間だけのいびき','毎晩の大いびき+呼吸が止まる瞬間がある','遠足で疲れた日のいびき'], a:1, k:'「毎晩+呼吸停止」は睡眠時無呼吸のサイン。動画を撮って耳鼻科に見せましょう。'},
+      {q:'受診のときに一番役立つ準備は？', c:['寝ている時の動画を撮る','起きてから本人に説明させる','いびきの音まね'], a:0, k:'診察室では寝てくれません(笑)。おうちの動画が何よりの証拠になります。'}]},
+  { id:'yukkurin', t:'発達の妖精ユックリンと歩く', e:'🌱',
+    m:{n:'ユックリン', real:'発達のスピードの個人差(発達の気がかり)', age:'0歳〜6歳', av:'🌱', col:'#E2F6E9',
+       waza:'※ユックリンはモンスターではなく「妖精」。子どもそれぞれのペースで歩く案内人', weak:'弱点なし!「早めの相談」はレッテルではなく、その子に合う関わりを見つける近道。'},
+    lesson:[
+      {h:'発達の目安と「気がかり」', b:'発達の目安(あくまで目安!):\n・首すわり4ヶ月ごろ/おすわり7ヶ月/ハイハイ8〜9ヶ月/ひとり歩き1歳〜1歳半\n・意味のある言葉1歳〜/2語文2歳ごろ\n\n相談を考えたいサイン:\n・首すわりやおすわりが目安より大きく遅い\n・呼んでも振り向かない、視線が合いにくい\n・1歳半で指さしも意味のある言葉もない\n・つま先歩きがずっと続く、極端に体がかたい/やわらかい\n\nこれらは脳性麻痺や発達の特性などのサインのことも。でも「サイン=診断」ではありません。'},
+      {h:'早めの相談は近道', b:'大事なことをひとつだけ。\n\n相談することは、子どもにレッテルを貼ることではありません。「この子はどんなふうに世界を見ていて、どう関わると伸びるのか」を一緒に探すことです。\n\n・乳幼児健診(1ヶ月/4ヶ月/10ヶ月/1歳半/3歳)は最高の相談チャンス\n・地域の子育て支援センター、保健師さん、かかりつけ小児科\n・必要なら療育(発達支援)へ。早く始めるほど選択肢が増えます\n\nユックリンと歩く道も、ちゃんと前に進んでいます。比べる相手は「よその子」ではなく「きのうのわが子」。あなたはもう十分がんばっています。'}],
+    quiz:[
+      {q:'1歳半検診で相談を考えたいのは？', c:['歩くのが1歳3ヶ月だった','指さしも意味のある言葉もまだない','人見知りが強い'], a:1, k:'指さしと言葉の理解は心の発達の大事なものさし。「家での様子」も合わせて相談してみましょう。'},
+      {q:'発達の相談について正しいのは？', c:['相談=診断がつくこと','早めの相談はその子に合う関わりを見つける近道','小学校まで待つのがよい'], a:1, k:'相談は近道でありプレゼント。健診や支援センターを気軽に使ってOKです。'}]}
+]}
+];
+
+/* ---------- ピッポの救急サイン(レッドサイン) ---------- */
+const REDSIGNS=[
+ ['🌡️','生後3ヶ月未満の38℃以上の発熱(元気そうでも)'],
+ ['😵','ぐったりして反応が悪い・呼びかけに視線が合わない'],
+ ['💙','顔色が悪い、くちびるが紫色'],
+ ['🫁','呼吸が苦しそう(陥没呼吸・肩で息・うなる)'],
+ ['⚡','けいれんが5分以上続く・くり返す'],
+ ['🤮','何度も吐いて水分がとれない'],
+ ['🟢','緑色のものを吐いた'],
+ ['💧','水分がとれない/おしっこが半日以上出ない'],
+ ['😖','強い腹痛(波のある激しい泣き・歩けない)'],
+ ['🩸','血便(いちごジャムのような便)'],
+ ['🟣','押しても消えない紫の点々(紫斑)+発熱'],
+ ['🤕','頭を強く打ったあとに吐く・ぼーっとする'],
+ ['🔋','ボタン電池・磁石・タバコ・薬を飲んだかも']];
+
+/* ---------- 年齢別ガイド ---------- */
+const AGEGUIDE=[
+ ['🐣 出生直後〜1週間','気をつける症状:顔色が悪い・チアノーゼ/呼吸が苦しそう/発熱/嘔吐/黄疸\n\n考える病気:先天性心疾患、呼吸窮迫症候群、新生児感染症、敗血症、髄膜炎、食道閉鎖症、腸回転異常症、新生児黄疸'],
+ ['🍼 生後2週間','気をつける症状:体重が増えない/哺乳が悪い/黄疸が続く/おなかが張る/嘔吐\n\n考える病気:哺乳不良、先天性心疾患、ヒルシュスプルング病、腸回転異常症、先天性胆道閉鎖症、甲状腺機能低下症'],
+ ['🌙 生後1ヶ月','気をつける症状:噴水のような嘔吐/黄疸が続く/発熱/咳・無呼吸\n\n考える病気:肥厚性幽門狭窄症、先天性胆道閉鎖症、尿路感染症、敗血症、髄膜炎、RSウイルス感染症、百日咳'],
+ ['🌼 生後3〜6ヶ月','気をつける症状:発熱/咳・ゼーゼー/湿疹/首すわりが遅い/哺乳不良\n\n考える病気:尿路感染症、かぜ、RSウイルス感染症、細気管支炎、アトピー性皮膚炎、発達遅滞、脳性麻痺'],
+ ['🐾 生後7〜12ヶ月','気をつける症状:高熱/発疹/嘔吐・下痢/けいれん/呼吸困難\n\n考える病気:突発性発疹、胃腸炎(ロタ・ノロ)、熱性けいれん、クループ症候群、中耳炎'],
+ ['🚶 1歳','気をつける症状:発熱/耳を痛がる/咳・ゼーゼー/歩き方がおかしい/誤飲\n\n考える病気:中耳炎、尿路感染症、川崎病、気管支喘息、クループ症候群、腸重積症、ボタン電池・磁石誤飲'],
+ ['🏃 2歳','気をつける症状:発熱と発疹/口の中の痛み/手足の発疹/嘔吐・腹痛/歩きたがらない\n\n考える病気:手足口病、ヘルパンギーナ、水ぼうそう、溶連菌感染症、胃腸炎、腸重積症、一過性股関節炎、熱性けいれん'],
+ ['🎨 3歳','気をつける症状:高熱が続く/咳が長引く/尿が多い/体重が減る/顔がむくむ\n\n考える病気:川崎病、アデノウイルス感染症、溶連菌感染症、気管支喘息、マイコプラズマ感染症、1型糖尿病、ネフローゼ症候群'],
+ ['✂️ 4歳','気をつける症状:のどの痛み/発熱/腹痛/便秘/頻尿/いびき\n\n考える病気:溶連菌感染症、アデノウイルス感染症、虫垂炎、便秘症、尿路感染症、神経性頻尿、アデノイド肥大、睡眠時無呼吸症候群'],
+ ['🎒 5〜6歳','気をつける症状:咳が長引く/発熱/血尿・蛋白尿/関節痛/頭痛/登園しぶり\n\n考える病気:マイコプラズマ肺炎、溶連菌感染症、IgA腎症、急性糸球体腎炎、IgA血管炎、若年性特発性関節炎、片頭痛、副鼻腔炎、心理的ストレス']];
+
+/* ---------- 称号 ---------- */
+const TITLES=['けんしゅう中ひよこ','ひよっこドクター','たのもしい見守り隊','症状よみの達人','スーパーホームドクター','でんせつのピッポドクター'];
+
+/* ---------- 状態 ---------- */
+let S={started:false,name:'',baby:'',exp:0,done:{},stars:{},caught:{},redRead:false,ageRead:false};
+let mem={};
+const SAVEKEY='pippo2-save-v1';
+async function save(){
+  const data=JSON.stringify(S);
+  try{ localStorage.setItem(SAVEKEY, data); return; }catch(e){}
+  try{ if(window.storage){ await window.storage.set(SAVEKEY, data); return; } }catch(e){}
+  mem[SAVEKEY]=data;
+}
+async function load(){
+  try{ const v=localStorage.getItem(SAVEKEY); if(v){ S=Object.assign(S,JSON.parse(v)); return true; } }catch(e){}
+  try{ if(window.storage){ const r=await window.storage.get(SAVEKEY); if(r&&r.value){ S=Object.assign(S,JSON.parse(r.value)); return true; } } }catch(e){}
+  if(mem[SAVEKEY]){ S=Object.assign(S,JSON.parse(mem[SAVEKEY])); return true; }
+  return false;
+}
+
+/* ---------- ユーティリティ ---------- */
+const app=document.getElementById('app');
+function lvOf(exp){ return Math.min(99, Math.floor(exp/60)+1); }
+function titleOf(lv){ return TITLES[Math.min(TITLES.length-1, Math.floor((lv-1)/2))]; }
+function expInLv(exp){ return exp%60; }
+function esc(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),2200); }
+function confetti(){ const em=['🎉','✨','🌸','⭐','💛','🩺']; for(let i=0;i<18;i++){ const d=document.createElement('div'); d.className='confetti'; d.textContent=em[i%em.length]; d.style.left=(Math.random()*100)+'%'; d.style.animationDelay=(Math.random()*.6)+'s'; document.body.appendChild(d); setTimeout(()=>d.remove(),3000);} }
+function doneCount(ci){ return CH[ci].quests.filter(q=>S.done[CH[ci].id+'/'+q.id]).length; }
+function totalDone(){ return Object.keys(S.done).length; }
+function totalQuests(){ return CH.reduce((a,c)=>a+c.quests.length,0); }
+function allMon(){ const r=[]; CH.forEach((c,ci)=>c.quests.forEach((q,qi)=>r.push({ci,qi,key:c.id+'/'+q.id,m:q.m}))); return r; }
+function caughtCount(){ return allMon().filter(x=>S.caught[x.key]).length; }
+function header(){
+  const lv=lvOf(S.exp);
+  return `<div class="topbar">
+    <div class="face">${pippoSVG('nico')}</div>
+    <div class="info">
+      <div class="nm">${esc(S.name||'パパママ')}さん <span class="tag">Lv.${lv}</span></div>
+      <div class="lv">称号:${titleOf(lv)}　📖ずかん ${caughtCount()}/${totalQuests()}</div>
+      <div class="expbar"><div style="width:${expInLv(S.exp)/60*100}%"></div></div>
+    </div>
+  </div>`;
+}
+function monsterCard(m,caught){
+  return `<div class="mcard">
+    <div class="mhead" style="background:${m.col};">
+      <div class="mav" style="background:#fff;">${caught?m.av:'❓'}</div>
+      <div><div class="mname">${caught?esc(m.n):'？？？'}</div><div class="mreal">${caught?esc(m.real):'まだ出会っていない'}</div></div>
+    </div>
+    ${caught?`<div class="mbody">
+      <div class="mrow"><div class="ml">出やすい年齢</div><div class="mv">${esc(m.age)}</div></div>
+      <div class="mrow"><div class="ml">とくいわざ</div><div class="mv">${esc(m.waza)}</div></div>
+      <div class="mrow"><div class="ml">よわてん</div><div class="mv">${esc(m.weak)}</div></div>
+    </div>`:''}
+  </div>`;
+}
+
+/* ---------- タイトル ---------- */
+function showTitle(hasSave){
+  app.innerHTML=`<div class="title-wrap">
+    <div class="logo-sub">🩺 だい2しょう・びょうきの学び 🩺</div>
+    <div class="logo-main">ピッポ<br>アドベンチャー2<br><span style="font-size:17px;">〜びょうきモンスターずかんの巻〜</span></div>
+    <div class="title-pippo">${pippoSVG('waku')}</div>
+    <div style="font-size:13px;font-weight:900;color:var(--cho-l);">聴診器をさげた「ピッポせんせい」と、<br>0〜6歳の病気サインを見破る冒険へ!<br>びょうきモンスターを ずかんに集めよう。</div>
+    ${hasSave?`<button class="btn" id="bCont">つづきから</button><button class="btn ghost" id="bNew">はじめから</button>`
+             :`<button class="btn" id="bNew">ぼうけんをはじめる</button>`}
+    <div class="line-note">子ども救急LINE BOT 連携アプリ・第2章(配布版)<br>あそんだ記録はこの端末のブラウザに保存されます。<br>※一般的な医療情報です。診断するものではありません。心配な症状は医療機関・#8000へ。</div>
+  </div>`;
+  const bn=document.getElementById('bNew'); if(bn) bn.onclick=()=>showSetup();
+  const bc=document.getElementById('bCont'); if(bc) bc.onclick=()=>showHome();
+}
+
+/* ---------- はじめの設定 ---------- */
+function showSetup(){
+  app.innerHTML=`
+    <h2 class="center" style="margin-top:8px;">ぼうけんのじゅんび</h2>
+    <div class="card center" style="padding-top:12px;">
+      <div style="width:90px;margin:0 auto;">${pippoSVG('nico')}</div>
+      <div style="font-size:13px;font-weight:700;line-height:1.8;">第1章クリアおめでとうピポ!<br>今度はキミが「おうちのドクター」だ。<br>こまった家族のケースを診断して、<br>びょうきモンスターをずかんに集めよう!</div>
+    </div>
+    <div class="card">
+      <b>① あなたのニックネーム</b>
+      <input class="namein" id="inName" maxlength="10" placeholder="例:こうへい">
+      <b style="display:block;margin-top:14px;">② お子さんのなまえ(よびな)</b>
+      <input class="namein" id="inBaby" maxlength="10" placeholder="例:ぴーちゃん">
+    </div>
+    <div class="card">
+      <b>🚦 このゲームの遊びかた</b>
+      <p style="font-size:13px;font-weight:700;line-height:1.9;margin-top:6px;">ケース問題には「受診しんごう」で答えるよ。</p>
+      <div class="light-legend">
+        <div style="background:var(--mido);">🟢<br>おうちで<br>ようすみ</div>
+        <div style="background:var(--ki);color:var(--cho);">🟡<br>診療時間内に<br>受診</div>
+        <div style="background:var(--aka);">🔴<br>いますぐ受診<br>#8000・119</div>
+      </div>
+      <p style="font-size:12px;font-weight:700;color:var(--cho-l);line-height:1.8;margin-top:8px;">どのステージからでも遊べます。気になる症状の島からどうぞ!</p>
+    </div>
+    <button class="btn" id="bGo">ぼうけんスタート!</button>
+    <button class="btn ghost" id="bBack">もどる</button>`;
+  document.getElementById('bBack').onclick=()=>boot();
+  document.getElementById('bGo').onclick=async()=>{
+    S={started:true,name:document.getElementById('inName').value.trim()||'パパママ',
+       baby:document.getElementById('inBaby').value.trim()||'わが子',
+       exp:0,done:{},stars:{},caught:{},redRead:false,ageRead:false};
+    await save(); confetti(); toast('だい2しょう、かいまく!');
+    showHome();
+  };
+}
+
+/* ---------- ホーム(マップ) ---------- */
+function showHome(){
+  app.innerHTML=`${header()}
+    <div class="card" style="display:flex;gap:12px;align-items:center;">
+      <div style="width:64px;flex:none;animation:fuwa 3s infinite;">${pippoSVG('nico')}</div>
+      <div class="fukidashi">${esc(S.baby)}を守る知識のぼうけん、第2章ピポ!<br>島でこまった家族を診断して、モンスターをずかんに集めよう🩺</div>
+    </div>
+    ${CH.map((c,i)=>{
+      const dc=doneCount(i), all=c.quests.length, comp=dc===all;
+      return `<div class="island" data-i="${i}">
+        <div class="ic" style="background:${c.col}">${c.emoji}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ttl">${c.name}</div>
+          <div class="sub">${c.age} / モンスター${all}体</div>
+          <div class="prog">${comp?'👑 コンプリート!':'📖 '+dc+' / '+all+' とうろく'}</div>
+        </div>
+        <div style="font-size:20px;">▶</div>
+      </div>`;}).join('')}
+    <div class="kit-banner" id="bRed" style="background:linear-gradient(135deg,#FF8A7A,#E04B3D);box-shadow:0 6px 0 rgba(160,40,30,.3);">
+      <div style="font-size:34px;">🚨</div>
+      <div style="flex:1;">
+        <div style="font-weight:900;font-size:16px;">ピッポの救急サイン</div>
+        <div style="font-size:12px;font-weight:700;opacity:.95;">この13サインは ぜったい見逃さない!</div>
+      </div><div style="font-size:20px;">▶</div>
+    </div>
+    <div class="kit-banner" id="bAge" style="background:linear-gradient(135deg,#8ED1E8,#5BAECB);box-shadow:0 6px 0 rgba(60,120,150,.3);">
+      <div style="font-size:34px;">🗓️</div>
+      <div style="flex:1;">
+        <div style="font-weight:900;font-size:16px;">ねんれい別ガイド</div>
+        <div style="font-size:12px;font-weight:700;opacity:.95;">0〜6歳・年齢ごとの注意サインと病気</div>
+      </div><div style="font-size:20px;">▶</div>
+    </div>
+    <div class="menu-row">
+      <button class="mbtn" id="bZukan"><span>📖</span>ずかん</button>
+      <button class="mbtn" id="bBadge"><span>🏅</span>バッジ</button>
+      <button class="mbtn" id="bTitle"><span>🏠</span>タイトル</button>
+    </div>
+    <div class="notice">📖 このアプリは年齢ごとの「よくある病気」と「見逃したくないサイン」を知るための一般的な情報です。診断はできません。大切なのは病名の暗記ではなく、「この年齢・この症状は注意」「このサインは早めに相談」の2つ。迷ったら #8000・かかりつけ医へ。</div>`;
+  document.querySelectorAll('.island').forEach(el=>el.onclick=()=>showChapter(+el.dataset.i));
+  document.getElementById('bRed').onclick=()=>showRed();
+  document.getElementById('bAge').onclick=()=>showAgeGuide();
+  document.getElementById('bZukan').onclick=()=>showZukan();
+  document.getElementById('bBadge').onclick=()=>showBadges();
+  document.getElementById('bTitle').onclick=()=>showTitle(true);
+}
+
+/* ---------- 章(クエスト一覧) ---------- */
+function showChapter(ci){
+  const c=CH[ci];
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <div class="card" style="background:${c.col};display:flex;gap:12px;align-items:center;">
+      <div style="font-size:40px;">${c.emoji}</div>
+      <div><h2 style="font-size:20px;">${c.name}</h2><div style="font-size:12px;font-weight:700;color:var(--cho-l);">${c.age}にあらわれるモンスターたち</div></div>
+    </div>
+    ${c.quests.map((q,qi)=>{
+      const key=c.id+'/'+q.id, dn=S.done[key], st=S.stars[key]||0;
+      return `<div class="quest" data-q="${qi}">
+        <div class="qic" style="background:${q.m.col};">${dn?q.m.av:'❓'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="qt">${q.t}</div>
+          <div class="qs">${dn?esc(q.m.n)+' とうろく済み':'？？？ <span class="agetag">'+esc(q.m.age)+'</span>'}</div>
+          ${dn?`<div class="stars">${'★'.repeat(st)}${'☆'.repeat(q.quiz.length-st)}</div>`:''}
+        </div>
+        <div class="stamp">${dn?'GET!':'▶'}</div>
+      </div>`;}).join('')}`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.querySelectorAll('.quest').forEach(el=>el.onclick=()=>showLesson(ci,+el.dataset.q,0));
+}
+
+/* ---------- レッスン ---------- */
+function showLesson(ci,qi,page){
+  const c=CH[ci], q=c.quests[qi], L=q.lesson, last=page===L.length-1;
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← もどる</button>
+    <div class="center" style="margin-top:4px;"><span class="tag">${q.e} ${q.t}</span> <span class="agetag">${esc(q.m.age)}</span></div>
+    <div class="lesson-card">
+      <h3>${esc(L[page].h)}</h3>
+      <p>${esc(L[page].b)}</p>
+      <div class="pippo-say">
+        <div style="width:54px;flex:none;">${pippoSVG('nico')}</div>
+        <div class="fukidashi">${last?'よし、診察ルームでケースに挑戦だピポ!':'つぎのページもチェックピポ〜'}</div>
+      </div>
+    </div>
+    <div class="dots">${L.map((_,i)=>`<i class="${i===page?'on':''}"></i>`).join('')}</div>
+    <div class="nav2">
+      ${page>0?'<button class="btn ghost" id="bPrev">← まえ</button>':''}
+      ${last?'<button class="btn yellow" id="bBattle">🩺 診察ルームへ!</button>':'<button class="btn blue" id="bNext">つぎへ →</button>'}
+    </div>`;
+  document.getElementById('bb').onclick=()=>showChapter(ci);
+  const bp=document.getElementById('bPrev'); if(bp) bp.onclick=()=>showLesson(ci,qi,page-1);
+  const bn=document.getElementById('bNext'); if(bn) bn.onclick=()=>showLesson(ci,qi,page+1);
+  const bb2=document.getElementById('bBattle'); if(bb2) bb2.onclick=()=>showBattle(ci,qi,0,0);
+}
+
+/* ---------- 診察バトル ---------- */
+function showBattle(ci,qi,no,correct){
+  const c=CH[ci], q=c.quests[qi], QZ=q.quiz, total=QZ.length;
+  const enemyHP = total - correct;
+  if(no>=total){ return showResult(ci,qi,correct); }
+  const item=QZ[no];
+  const isCase=!item.c;
+  const choices=isCase?LIGHTS:item.c;
+  const lightCls=['lt-g','lt-y','lt-r'];
+  app.innerHTML=`${header()}
+    <div class="battle-field">
+      <div class="center" style="font-size:12px;font-weight:900;color:var(--cho-l);">しんさつ ${no+1} / ${total}</div>
+      <div class="enemy-zone" id="ez">
+        <div class="monster-av" style="background:${q.m.col};">${q.m.av}</div>
+        <div class="hpwrap">
+          <div class="hpname">びょうきモンスター ${esc(q.m.n)}</div>
+          <div class="hpbar"><div id="hpfill" style="width:${enemyHP/total*100}%"></div></div>
+        </div>
+      </div>
+      <div class="vs-pippo" id="vp"><div class="pp">${pippoSVG('ganba')}</div></div>
+      <div class="qbox">${isCase?'<span class="case-tag">🚦 受診しんごうで答えよう</span><br>':''}${esc(item.q)}</div>
+      <div id="choices">${choices.map((ch,i)=>`<button class="choice ${isCase?lightCls[i]:''}" data-i="${i}">${isCase?'':'🅰🅱🅲'[i]+' '}${esc(ch)}</button>`).join('')}</div>
+      <div id="after"></div>
+    </div>`;
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick=()=>{
+      const pick=+btn.dataset.i, ok=pick===item.a;
+      document.querySelectorAll('.choice').forEach(b=>{ b.disabled=true; b.style.pointerEvents='none';
+        if(+b.dataset.i===item.a) b.classList.add('ok'); else if(+b.dataset.i===pick) b.classList.add('ng'); });
+      const ez=document.getElementById('ez'), vp=document.getElementById('vp');
+      if(ok){
+        vp.classList.add('attack'); ez.classList.add('hit');
+        const beam=document.createElement('div'); beam.className='beam'; beam.textContent='🩺✨'; vp.appendChild(beam);
+        const newHP=total-(correct+1);
+        document.getElementById('hpfill').style.width=(newHP/total*100)+'%';
+        toast('ナイス診断!モンスターのひみつが見えた!');
+      } else {
+        toast('だいじょうぶ、ここで覚えれば本番で勝てるピポ!');
+      }
+      document.getElementById('after').innerHTML=`
+        <div class="kaisetsu">${ok?'🎯 ナイス判断!':'💡 こたえは「'+esc(choices[item.a])+'」'}\n${esc(item.k)}</div>
+        <button class="btn ${no+1>=total?'yellow':'blue'}" id="bNext2">${no+1>=total?'しんだん結果へ!':'つぎのケースへ →'}</button>`;
+      document.getElementById('bNext2').onclick=()=>showBattle(ci,qi,no+1,correct+(ok?1:0));
+    };
+  });
+}
+
+/* ---------- リザルト(ずかん登録) ---------- */
+async function showResult(ci,qi,correct){
+  const c=CH[ci], q=c.quests[qi], total=q.quiz.length, key=c.id+'/'+q.id;
+  const first=!S.done[key];
+  const gained = first ? 30+correct*10 : 5+correct*5;
+  S.done[key]=true; S.caught[key]=true;
+  S.stars[key]=Math.max(S.stars[key]||0, correct);
+  const beforeLv=lvOf(S.exp); S.exp+=gained; const afterLv=lvOf(S.exp);
+  await save();
+  const allDone=doneCount(ci)===c.quests.length;
+  confetti();
+  app.innerHTML=`${header()}
+    <div class="card result-pop">
+      <div class="big">${first?'ずかんに とうろく!':'おさらいクリア!'}</div>
+      <div style="width:110px;margin:6px auto;animation:pyon 1s;">${pippoSVG('waku')}</div>
+      <div style="font-weight:900;">${esc(q.m.n)}のひみつを すべて見破った✨</div>
+      <div class="bigstars">${'★'.repeat(correct)}${'☆'.repeat(total-correct)}</div>
+      <div class="exp-get">+${gained} EXP</div>
+      ${afterLv>beforeLv?`<div style="margin-top:10px;font-weight:900;color:var(--sakura-d);font-size:18px;animation:popin .5s;">🎺 レベルアップ! Lv.${afterLv}<br><span style="font-size:13px;">称号「${titleOf(afterLv)}」</span></div>`:''}
+      ${allDone?`<div style="margin-top:10px;font-weight:900;color:var(--mint-d);">👑 ${c.name} コンプリート!</div>`:''}
+    </div>
+    ${monsterCard(q.m,true)}
+    ${correct<total?'<button class="btn yellow" id="bRetry">もういちど挑戦して★満点をめざす</button>':''}
+    <button class="btn" id="bList">クエスト一覧へ</button>
+    <button class="btn ghost" id="bMap">マップへもどる</button>`;
+  const br=document.getElementById('bRetry'); if(br) br.onclick=()=>showBattle(ci,qi,0,0);
+  document.getElementById('bList').onclick=()=>showChapter(ci);
+  document.getElementById('bMap').onclick=()=>showHome();
+}
+
+/* ---------- ずかん ---------- */
+function showZukan(detailKey){
+  const mons=allMon();
+  if(detailKey){
+    const x=mons.find(z=>z.key===detailKey);
+    app.innerHTML=`${header()}
+      <button class="backbtn" id="bb" style="margin-top:12px;">← ずかんへ</button>
+      ${monsterCard(x.m, !!S.caught[x.key])}
+      ${S.caught[x.key]?'<button class="btn mint" id="bRe">レッスン&診察をおさらいする</button>':'<button class="btn yellow" id="bRe">クエストに出発して出会う!</button>'}`;
+    document.getElementById('bb').onclick=()=>showZukan();
+    document.getElementById('bRe').onclick=()=>showLesson(x.ci,x.qi,0);
+    return;
+  }
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <h2 class="center">📖 びょうきモンスターずかん</h2>
+    <p class="center" style="font-size:12px;font-weight:700;color:var(--cho-l);margin-top:4px;">${caughtCount()} / ${totalQuests()} 体 とうろく済み</p>
+    <div class="zukan-grid">
+      ${mons.map(x=>`<div class="zk${S.caught[x.key]?'':' locked'}" data-k="${x.key}">
+        <div class="za">${S.caught[x.key]?x.m.av:'❓'}</div>
+        <div class="zn">${S.caught[x.key]?esc(x.m.n):'？？？'}</div>
+      </div>`).join('')}
+    </div>
+    <div class="notice">モンスターをタップすると、出やすい年齢・とくいわざ(症状)・よわてん(対処)のカードが見られるよ。全${totalQuests()}体コンプリートをめざせ!</div>`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.querySelectorAll('.zk').forEach(el=>el.onclick=()=>showZukan(el.dataset.k));
+}
+
+/* ---------- 救急サイン ---------- */
+function showRed(){
+  if(!S.redRead){ S.redRead=true; save(); }
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <div class="card" style="background:linear-gradient(135deg,#FFD9CF,#FFE9D6);display:flex;gap:12px;align-items:center;">
+      <div style="font-size:40px;">🚨</div>
+      <div><h2 style="font-size:19px;">ピッポの救急サイン</h2><div style="font-size:12px;font-weight:700;color:var(--cho-l);">ひとつでもあれば、早めの受診・救急相談を!</div></div>
+    </div>
+    <div class="card center" style="background:#fff;">
+      <img src="${QR_IMG}" alt="子ども救急LINE BOT QRコード" style="width:170px;height:170px;border-radius:18px;border:4px solid #F0E4D0;">
+      <div style="font-weight:900;font-size:14px;margin-top:10px;">スマホのカメラで読み取ってね</div>
+      <div style="font-size:12px;font-weight:700;color:var(--cho-l);line-height:1.8;margin-top:4px;">家族やお友だちに「ピッポの救急サイン」をシェア!<br>画像を長押しすると保存・共有もできます。</div>
+    </div>
+    ${REDSIGNS.map(r=>`<div class="redsign"><div class="ri">${r[0]}</div><div>${esc(r[1])}</div></div>`).join('')}
+    <h3 style="margin-top:20px;">📞 たいせつな連絡先</h3>
+    <div class="tel-card" style="background:linear-gradient(135deg,#FF8FB1,#F06292);">
+      <a href="tel:%238000"><div style="font-size:13px;font-weight:900;">こども医療電話相談(夜間・休日の「どうしよう」に)</div>
+      <div class="num">#8000</div><div style="font-size:11px;font-weight:700;">タップで発信 / 小児科医・看護師が相談にのってくれます</div></a>
+    </div>
+    <div class="tel-card" style="background:linear-gradient(135deg,#8ED1E8,#5BAECB);">
+      <a href="tel:%237119"><div style="font-size:13px;font-weight:900;">救急車をよぶか迷ったら(対応地域)</div>
+      <div class="num">#7119</div><div style="font-size:11px;font-weight:700;">タップで発信 / 救急安心センター</div></a>
+    </div>
+    <div class="tel-card" style="background:linear-gradient(135deg,#FFB199,#FF6F61);">
+      <a href="tel:119"><div style="font-size:13px;font-weight:900;">意識がない・けいれんが続く・呼吸がおかしい</div>
+      <div class="num">119</div><div style="font-size:11px;font-weight:700;">ためらわず救急車を!</div></a>
+    </div>
+    <div class="notice">💬 子ども救急LINE BOTのトークでは、症状べつの受診めやすチャットも使えます。第1章「ピッポくんの救急箱」もあわせてチェック!</div>
+    <button class="btn" id="bHome2">マップへもどる</button>`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.getElementById('bHome2').onclick=()=>showHome();
+}
+
+/* ---------- 年齢別ガイド ---------- */
+function showAgeGuide(){
+  if(!S.ageRead){ S.ageRead=true; save(); }
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <div class="card" style="background:linear-gradient(135deg,#D7F2FF,#E2F6E9);display:flex;gap:12px;align-items:center;">
+      <div style="font-size:40px;">🗓️</div>
+      <div><h2 style="font-size:19px;">ねんれい別ガイド</h2><div style="font-size:12px;font-weight:700;color:var(--cho-l);">年齢で変わる「気をつける症状」と「考える病気」</div></div>
+    </div>
+    <p style="font-size:12px;font-weight:700;color:var(--cho-l);line-height:1.8;margin-top:10px;">病名をぜんぶ覚える必要はありません。「この年齢で、この症状なら注意」がわかればOK。タップで開きます。</p>
+    ${AGEGUIDE.map((g,i)=>`<div class="accordion" id="ag${i}">
+      <div class="acc-h">${g[0]}<span class="arr">▶</span></div>
+      <div class="acc-b">${esc(g[1])}</div></div>`).join('')}
+    <button class="btn" id="bHome2">マップへもどる</button>`;
+  document.getElementById('bb').onclick=()=>showHome();
+  document.getElementById('bHome2').onclick=()=>showHome();
+  document.querySelectorAll('.accordion .acc-h').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
+}
+
+/* ---------- バッジ ---------- */
+function showBadges(){
+  const lv=lvOf(S.exp);
+  const list=[
+    {i:'🩺',n:'はじめての診察',ok:totalDone()>=1,d:'はじめてのクエストをクリア'},
+    ...CH.map((c,ci)=>({i:c.emoji+'👑',n:c.name+'の主治医',ok:doneCount(ci)===c.quests.length,d:c.name+'を全クリア'})),
+    {i:'🚨',n:'救急サインマスター',ok:!!S.redRead,d:'ピッポの救急サインを見た'},
+    {i:'🗓️',n:'年齢ガイドの賢者',ok:!!S.ageRead,d:'ねんれい別ガイドを見た'},
+    {i:'🌟',n:'★パーフェクト診断',ok:Object.entries(S.stars).some(([k,v])=>{const[cid,qid]=k.split('/');const ch=CH.find(x=>x.id===cid);const qq=ch&&ch.quests.find(x=>x.id===qid);return qq&&v===qq.quiz.length;}),d:'どれかのクエストで全問正解'},
+    {i:'📖',n:'ずかんコンプリート',ok:caughtCount()===totalQuests(),d:'モンスター全'+totalQuests()+'体とうろく'},
+    {i:'💪',n:'Lv.10とっぱ',ok:lv>=10,d:'レベル10に到達'}
+  ];
+  app.innerHTML=`${header()}
+    <button class="backbtn" id="bb" style="margin-top:12px;">← マップへ</button>
+    <h2 class="center">🏅 バッジコレクション</h2>
+    <p class="center" style="font-size:12px;font-weight:700;color:var(--cho-l);margin-top:4px;">${list.filter(b=>b.ok).length} / ${list.length} こ あつめたよ</p>
+    <div class="badge-grid">
+      ${list.map(b=>`<div class="badge${b.ok?'':' locked'}"><div class="bi">${b.ok?b.i:'❓'}</div><div class="bn">${b.n}</div><div style="font-size:9px;color:var(--cho-l);font-weight:700;margin-top:2px;">${b.d}</div></div>`).join('')}
+    </div>`;
+  document.getElementById('bb').onclick=()=>showHome();
+}
+
+/* ---------- 起動 ---------- */
+async function boot(){
+  const has=await load();
+  showTitle(!!(has && S.started));
+}
+boot();
+</script>
+</body>
+</html>
