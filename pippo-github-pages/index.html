@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ピッポアドベンチャー ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--sakura:#FF8FB1;--sakura-d:#F06292;--sora:#8ED1E8;--cho:#5B4636;--cho-l:#8A7461;--kage:0 6px 0 rgba(91,70,54,.12);}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+body{font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN',sans-serif;
+ background:linear-gradient(180deg,#BDE8F5 0%,#FDF3DC 60%,#FFF7E6 100%);
+ color:var(--cho);display:flex;justify-content:center;min-height:100dvh;}
+#stage{width:100%;max-width:430px;padding:30px 18px 50px;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative;}
+@keyframes fuwa{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;}}
+.clouds{position:absolute;top:18px;width:100%;left:0;display:flex;justify-content:space-around;font-size:34px;opacity:.8;pointer-events:none;}
+.clouds span{animation:fuwa 4s infinite;}
+.clouds span:nth-child(2){animation-delay:1.3s;}
+.clouds span:nth-child(3){animation-delay:2.2s;}
+.logo-sub{font-size:13px;font-weight:900;color:var(--cho-l);letter-spacing:2px;}
+.logo-main{font-size:36px;font-weight:900;color:var(--sakura-d);text-shadow:3px 3px 0 #fff;line-height:1.25;margin:6px 0;}
+.pippo{width:160px;margin:8px auto;animation:fuwa 2.6s infinite;}
+.glink{display:flex;align-items:center;gap:14px;background:#fff;border-radius:24px;padding:16px;box-shadow:var(--kage);margin-top:16px;text-decoration:none;color:var(--cho);text-align:left;transition:transform .1s;}
+.glink:active{transform:scale(.97);}
+.glink .gi{width:56px;height:56px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;}
+.glink .gt{font-weight:900;font-size:17px;}
+.glink .gs{font-size:12px;font-weight:700;color:var(--cho-l);margin-top:3px;line-height:1.6;}
+.note{font-size:11px;color:var(--cho-l);font-weight:700;margin-top:20px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="clouds" aria-hidden="true"><span>☁️</span><span>☁️</span><span>☁️</span></div>
+  <div class="logo-sub">🍼 たのしく学べる子育てRPG 🩺</div>
+  <div class="logo-main">ピッポ<br>アドベンチャー</div>
+  <div class="pippo"><svg viewBox="0 0 100 104" xmlns="http://www.w3.org/2000/svg" aria-label="ピッポくん">
+    <circle cx="50" cy="54" r="48" fill="#FBF3C9"/>
+    <ellipse cx="50" cy="99" rx="26" ry="4" fill="rgba(91,70,54,.12)"/>
+    <path d="M40 98 v4 M46 100 v3 M54 100 v3 M60 98 v4" stroke="#E8912D" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M47 13 q-3 -9 3 -11 q5 3 1 11 M52 13 q2 -9 8 -8 q3 5 -5 9" fill="#FFE9A8" stroke="#7A4E2B" stroke-width="2.6" stroke-linejoin="round"/>
+    <circle cx="50" cy="57" r="40" fill="#FFE38E" stroke="#7A4E2B" stroke-width="3.5"/>
+    <path d="M22 36 q26 -14 56 0" fill="none" stroke="#FFF2BE" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+    <ellipse cx="12.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(14 12.5 66)"/>
+    <ellipse cx="87.5" cy="66" rx="8" ry="12" fill="#F8CE74" stroke="#7A4E2B" stroke-width="3" transform="rotate(-14 87.5 66)"/>
+    <path d="M43 21 Q50 16 57 21" fill="none" stroke="#5B4030" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="31" cy="22" r="12.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.5"/>
+    <circle cx="69" cy="22" r="12.5" fill="#BFE9EC" stroke="#5B4030" stroke-width="3.5"/>
+    <ellipse cx="27" cy="18" rx="5" ry="3.4" fill="#fff" opacity=".9" transform="rotate(-25 27 18)"/>
+    <ellipse cx="65" cy="18" rx="5" ry="3.4" fill="#fff" opacity=".9" transform="rotate(-25 65 18)"/>
+    <circle cx="36" cy="48" r="5.6" fill="#3A2A1A"/><circle cx="64" cy="48" r="5.6" fill="#3A2A1A"/>
+    <circle cx="38" cy="46" r="1.8" fill="#fff"/><circle cx="66" cy="46" r="1.8" fill="#fff"/>
+    <circle cx="26" cy="59" r="5.6" fill="#F9A8C0" opacity=".85"/><circle cx="74" cy="59" r="5.6" fill="#F9A8C0" opacity=".85"/>
+    <path d="M50 51 L58.5 58.5 L50 66 L41.5 58.5 Z" fill="#F6A21F" stroke="#C97A12" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M50 51 L58.5 58.5 L41.5 58.5 Z" fill="#FFC04D"/>
+  </svg></div>
+  <a class="glink" href="./pippo-adventure.html">
+    <div class="gi" style="background:#FFE3EA;">🐣</div>
+    <div><div class="gt">だい1しょう・子育ての冒険</div>
+    <div class="gs">抱っこ・授乳・沐浴・検診・離乳食…<br>はじめての子育てを楽しく学ぶ全28クエスト</div></div>
+  </a>
+  <a class="glink" href="./pippo-adventure2.html">
+    <div class="gi" style="background:#D7F2FF;">🩺</div>
+    <div><div class="gt">だい2しょう・びょうきモンスターずかん</div>
+    <div class="gs">0〜6歳の病気サインを見破る診察RPG<br>受診しんごう🚦で31体のモンスターを集めよう</div></div>
+  </a>
+  <div class="note">子ども救急LINE BOT 連携コンテンツ<br>※一般的な育児・医療情報です。心配な症状は医療機関・#8000へ。</div>
+</div>
+</body>
+</html>
